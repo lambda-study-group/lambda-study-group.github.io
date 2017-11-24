@@ -1,10 +1,10 @@
 # (λstudy.group)
 
-:notebook: :pencil2: Repositório do grupo de estudos sobre programação funcional do [Telegram](https://t.me/lambdastudygroup).
-
 <p align="center">
-  <img src="assets/logo.png" alt="Logo do grupo de estudos">
+  <img src="assets/logo.png" width="200px" alt="Logo do grupo de estudos">
 </p>
+
+:notebook: :pencil2: Repositório do grupo de estudos sobre programação funcional do [Telegram](https://t.me/lambdastudygroup).
 
 ## :grey_question: Como funciona
 
