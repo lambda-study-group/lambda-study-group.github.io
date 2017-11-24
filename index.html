@@ -8,16 +8,17 @@
         text-align: center;
         margin: 10px;
       }
-      body { padding-top: 70px; }
+      body {
+        padding-top: 70px;
+      }
     </style>
   </head>
 
   <body>
-    <div id="elm-code-is-loaded-here"></div>
-
+    <div id="elm-code"></div>
     <script src="elm.js"></script>
     <script>
-      Elm.Main.embed(document.getElementById("elm-code-is-loaded-here"));
+      Elm.Main.embed(document.getElementById("elm-code"));
     </script>
   </body>
 </html>
