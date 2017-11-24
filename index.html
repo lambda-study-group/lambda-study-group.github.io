@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <style>
+      .jumbotron {
+        text-align: center;
+        margin: 10px;
+      }
+      body { padding-top: 70px; }
+    </style>
+  </head>
+
+  <body>
+    <div id="elm-code-is-loaded-here"></div>
+
+    <script src="elm.js"></script>
+    <script>
+      Elm.Main.embed(document.getElementById("elm-code-is-loaded-here"));
+    </script>
+  </body>
+</html>

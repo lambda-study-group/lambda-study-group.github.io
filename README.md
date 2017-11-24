@@ -25,3 +25,21 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
 - Intolerancia não será tolerada
 - Sem spam. Pode postar evento, post etc desde que tenha relação com o grupo
 - Podemos bater papo sobre coisas da vida mas se for muito nada a ver apagaremos
+
+## Contribuindo na landing page desse repo
+
+A landing page é feita em elm, para isso você precisa instalar entre as versões 18 e 19.
+```bash
+# pela npm
+npm install -g elm
+
+# pelo yarn
+yarn global add elm
+```
+
+Ou por links do windows e mac [aqui](https://guide.elm-lang.org/install.html)
+
+Para contribuir basta mexer no Main.elm e rodar esse comando para gerar um elm.js pimpão:
+```bash
+elm-make Main.elm --output elm.js
+```
