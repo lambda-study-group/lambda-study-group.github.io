@@ -15,7 +15,8 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
 ## :bulb: Projetos atuais
 
  - [Telegram Bot](https://github.com/lambda-study-group/telegram-bot)
- - [Juntar conteudo academico e pratico de várias linguagens em um awesome](https://github.com/lambda-study-group/awesome-functional-studies) - [Resolver exercicios da trilha de programação funcional do hacker rank](https://github.com/lambda-study-group/hacker-rank)
+ - [Juntar conteudo academico e pratico de várias linguagens em um awesome](https://github.com/lambda-study-group/awesome-functional-studies)
+ - [Resolver exercicios da trilha de programação funcional do hacker rank](https://github.com/lambda-study-group/hacker-rank)
  - [Resolver exercicios de linguagens funcionais no exercism](https://github.com/lambda-study-group/exercism)
  - [Fazer os exercicios do livro SICP em várias linguagens diferentes](https://github.com/lambda-study-group/sicp)
 
@@ -28,7 +29,7 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
 
 ## Contribuindo na landing page desse repo
 
-A landing page é feita em elm, para isso você precisa instalar entre as versões 18 e 19.
+A landing page é feita em elm, para isso você precisa instalar pelo terminal:
 ```bash
 # pela npm
 npm install -g elm
