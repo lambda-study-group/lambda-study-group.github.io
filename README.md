@@ -19,6 +19,7 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
  - [Resolver exercicios da trilha de programação funcional do hacker rank](https://github.com/lambda-study-group/hacker-rank)
  - [Resolver exercicios de linguagens funcionais no exercism](https://github.com/lambda-study-group/exercism)
  - [Fazer os exercicios do livro SICP em várias linguagens diferentes](https://github.com/lambda-study-group/sicp)
+ - [Desenvolvimento do jogo da Lava Jato com Clojure / ClojureScript](https://github.com/lava-jato-the-game/lava_jato)
 
 ## :gun: Regras do grupão
 
