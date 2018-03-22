@@ -16,10 +16,14 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
 
  - [Telegram Bot](https://github.com/lambda-study-group/telegram-bot)
  - [Juntar conteudo academico e pratico de várias linguagens em um awesome](https://github.com/lambda-study-group/awesome-functional-studies)
- - [Resolver exercicios da trilha de programação funcional do hacker rank](https://github.com/lambda-study-group/hacker-rank)
- - [Resolver exercicios de linguagens funcionais no exercism](https://github.com/lambda-study-group/exercism)
- - [Fazer os exercicios do livro SICP em várias linguagens diferentes](https://github.com/lambda-study-group/sicp)
- - [Desenvolvimento do jogo da Lava Jato com Clojure / ClojureScript](https://github.com/lava-jato-the-game/lava_jato)
+ - [Desenvolvimento do jogo da Lava Jato com Phoenix(Absinthe) / ClojureScript](https://github.com/lava-jato-the-game/lava_jato)
+
+## Resolução de Exercicios
+
+#### [Desafios Semanais](https://github.com/lambda-study-group/desafios)
+ - [Exercicios do livro SICP em várias linguagens diferentes](https://github.com/lambda-study-group/sicp)
+ - [Exercicios da trilha de programação funcional do HackerRank](https://github.com/lambda-study-group/hacker-rank)
+ - [Exercicios de linguagens funcionais no Exercism](https://github.com/lambda-study-group/exercism)
 
 ## :gun: Regras do grupão
 
