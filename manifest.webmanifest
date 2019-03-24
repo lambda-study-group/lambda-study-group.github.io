@@ -1,0 +1,17 @@
+{
+  "name": "Lambda Study Group",
+  "display": "standalone",
+  "short_name": "lambda",
+  "theme_color": "#c070a0",
+  "start_url": "/",
+  "background_color": "#e4e4e4",
+  "manifest_version": 2,
+  "version": "1",
+  "icons": [
+    {
+      "src": "https://lambda-study-group.github.io/assets/logo.png",
+      "sizes": "2000x2727",
+      "type": "image/png"
+    }
+  ]
+}
