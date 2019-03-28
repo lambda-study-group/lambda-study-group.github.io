@@ -46,7 +46,9 @@
     <div id="elm-code"></div>
     <script src="elm.js"></script>
     <script>
-      Elm.Main.embed(document.getElementById("elm-code"));
+      var app = Elm.Main.init({
+        node: document.getElementById('elm-code')
+      });
     </script>
   </body>
 </html>

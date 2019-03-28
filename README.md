@@ -34,18 +34,18 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
 
 ## Contribuindo na landing page desse repo
 
-A landing page é feita em elm, para isso você precisa instalar pelo terminal:
+A landing page é feita em elm@0.19.0, para isso você precisa instalar pelo terminal:
 ```bash
 # pela npm
-npm install -g elm
+npm install -g elm@0.19.0
 
 # pelo yarn
-yarn global add elm
+yarn global add elm@0.19.0
 ```
 
 Ou por links do windows e mac [aqui](https://guide.elm-lang.org/install.html)
 
 Para contribuir basta mexer no Main.elm e rodar esse comando para gerar um elm.js pimpão:
 ```bash
-elm-make Main.elm --output elm.js
+elm make Main.elm --optimize --output elm.js
 ```
