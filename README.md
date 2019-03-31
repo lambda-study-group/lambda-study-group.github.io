@@ -47,5 +47,5 @@ Ou por links do windows e mac [aqui](https://guide.elm-lang.org/install.html)
 
 Para contribuir basta mexer no Main.elm e rodar esse comando para gerar um elm.js pimpão:
 ```bash
-elm make Main.elm --optimize --output elm.js
+elm make src/Main.elm --optimize --output elm.js
 ```

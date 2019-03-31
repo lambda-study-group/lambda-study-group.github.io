@@ -1,9 +1,49 @@
 module Main exposing (main, view)
 
+import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Http
 
 
+type Model
+    = Failure
+    | Loading
+    | Success String
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( Loading
+    , Http.get
+        { url = "https://raw.githubusercontent.com/lambda-study-group/lambdinha-bot/master/jokes.json"
+        , expect = Http.expectString GotText
+        }
+    )
+
+
+type Msg
+    = GotText (Result Http.Error String)
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        GotText result ->
+            case result of
+                Ok fullText ->
+                    ( Success fullText, Cmd.none )
+
+                Err _ ->
+                    ( Failure, Cmd.none )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+view : Model -> Html Msg
 view model =
     div []
         [ div [ class "navbar navbar-inverse navbar-fixed-top" ]
@@ -13,6 +53,15 @@ view model =
                     ]
                 ]
             ]
+        , case model of
+            Failure ->
+                text "Meu pensamento não funcinou"
+
+            Loading ->
+                text "Pensando numa piada..."
+
+            Success fullText ->
+                pre [] [ text fullText ]
         , div [ class "jumbotron" ]
             [ h1 [] [ text "Sejem bem vindos ao lambda study group!" ]
             , img
@@ -31,4 +80,9 @@ view model =
 
 
 main =
-    view "dummy model"
+    Browser.element
+        { init = init
+        , update = update
+        , subscriptions = subscriptions
+        , view = view
+        }
