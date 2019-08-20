@@ -16,14 +16,18 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
 
  - [Telegram Bot](https://github.com/lambda-study-group/telegram-bot)
  - [Juntar conteudo academico e pratico de várias linguagens em um awesome](https://github.com/lambda-study-group/awesome-functional-studies)
+ - [Dicionario de tradução de termos funcionais](https://github.com/lambda-study-group/dicionario-termos-funcionais)
  - [Desenvolvimento do jogo da Lava Jato com Phoenix(Absinthe) / ClojureScript](https://github.com/lava-jato-the-game/lava_jato)
 
-## Resolução de Exercicios
+### Resolução de Exercicios
 
-#### [Desafios Semanais](https://github.com/lambda-study-group/desafios)
+ - [Desafios Semanais](https://github.com/lambda-study-group/desafios)
  - [Exercicios do livro SICP em várias linguagens diferentes](https://github.com/lambda-study-group/sicp)
  - [Exercicios da trilha de programação funcional do HackerRank](https://github.com/lambda-study-group/hacker-rank)
  - [Exercicios de linguagens funcionais no Exercism](https://github.com/lambda-study-group/exercism)
+
+### Livros
+- [Tradução do Functional Light Programming](https://github.com/lambda-study-group/Functional-Light-JS)
 
 ## :gun: Regras do grupão
 
