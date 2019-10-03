@@ -26,7 +26,7 @@ Para praticar temos alguns repositórios em que você pode resolver alguns exerc
  - [Exercicios da trilha de programação funcional do HackerRank](https://github.com/lambda-study-group/hacker-rank)
  - [Exercicios de linguagens funcionais no Exercism](https://github.com/lambda-study-group/exercism)
 
-### Livros
+### Traduções
 - [Tradução do Functional Light Programming](https://github.com/lambda-study-group/Functional-Light-JS)
 
 ## :gun: Regras do grupão
