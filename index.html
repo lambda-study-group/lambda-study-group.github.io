@@ -34,10 +34,12 @@
     <style>
       .jumbotron {
         text-align: center;
-        margin: 10px;
+        margin: 10%;
       }
-      body {
-        padding-top: 70px;
+      .project-box {
+        display: flex;
+        justify-content: space-evenly;
+        flex-flow: row wrap;
       }
     </style>
   </head>
@@ -46,7 +48,7 @@
     <div id="elm-code"></div>
     <script src="elm.js"></script>
     <script>
-      Elm.Main.embed(document.getElementById("elm-code"));
+      Elm.Main.init({ node: document.getElementById("elm-code")});
     </script>
   </body>
 </html>
