@@ -3,7 +3,7 @@ module Main exposing (..)
 import Contents
 import Css exposing (..)
 import Css.Global exposing (body, global)
-import Elements exposing (contentWrapper, headerTitle, lambdaLogo, textStyled)
+import Elements exposing (contentWrapper, headerTitle, lambdaLogo, link, textStyled)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (..)
@@ -31,13 +31,26 @@ lambdaSeparator =
             [ Css.width (px 120)
             , backgroundColor Theme.colors.pink
             , Css.height (px 4)
+            , margin3 (rem 1.5) (rem 0) (rem 3)
             ]
         ]
         []
 
 
+homeParagraph =
+    styled textStyled [ textLarge, textAlign center ]
+
+
 lambdaDescription =
-    div [] []
+    contentWrapper
+        [ homeParagraph []
+            [ text Contents.description ]
+        , homeParagraph []
+            [ text Contents.invite
+            , link Contents.telegram
+            , text "."
+            ]
+        ]
 
 
 homeSection =
@@ -47,7 +60,7 @@ homeSection =
             , justifyContent center
             , flexDirection column
             , alignItems center
-            , padding (rem 6)
+            , padding3 (rem 6) (rem 0) (rem 0)
             , maxWidth (px 720)
             , boxSizing borderBox
             , margin auto
@@ -56,9 +69,7 @@ homeSection =
         [ lambdaLogo
         , lambdaTitle
         , lambdaSeparator
-        , contentWrapper
-            [ textStyled [ css [ textLarge ] ] [ text Contents.description ]
-            ]
+        , lambdaDescription
         ]
 
 

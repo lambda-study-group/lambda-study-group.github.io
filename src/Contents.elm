@@ -21,8 +21,10 @@ invite =
     "Entre no nosso grupo do "
 
 
-telegramLinkData =
-    [ "https://t.me/lambdastudygroup", "telegram" ]
+telegram =
+    { url = "https://t.me/lambdastudygroup"
+    , label = "telegram"
+    }
 
 
 projects =
