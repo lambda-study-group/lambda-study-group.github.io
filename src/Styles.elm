@@ -40,5 +40,9 @@ textLarge =
     batch [ fontSize SG.textSize.large ]
 
 
-colorText =
+textColor =
     batch [ color SG.colors.text ]
+
+
+linkColor =
+    batch [ color SG.colors.link ]
