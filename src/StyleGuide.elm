@@ -15,8 +15,9 @@ colors =
 
 textSize =
     { small = rem 0.75
-    , medium = rem 1
-    , large = rem 2
+    , normal = rem 1
+    , medium = rem 2
+    , large = rem 2.5
     , xLarge = rem 4
     }
 
@@ -35,5 +36,5 @@ fontFamily =
 
 
 
--- # Todo
--- Breakpoints
+-- # TODO
+-- add breakpoints
