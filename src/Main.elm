@@ -3,12 +3,22 @@ module Main exposing (..)
 import Contents
 import Css exposing (..)
 import Css.Global exposing (body, global)
-import Elements exposing (contentWrapper, headerTitle, lambdaLogo, link, textStyled)
+import Elements
+    exposing
+        ( contentWrapper
+        , headerTitle
+        , lambdaLogo
+        , linkDefault
+        , linkText
+        , repositoryContainer
+        , spanStyled
+        , textStyled
+        )
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (..)
 import StyleGuide as Theme
-import Styles exposing (textLarge)
+import Styles exposing (paddingLarge, textMedium)
 
 
 globalCss =
@@ -38,16 +48,16 @@ lambdaSeparator =
 
 
 homeParagraph =
-    styled textStyled [ textLarge, textAlign center ]
+    styled textStyled [ textMedium, textAlign center ]
 
 
 lambdaDescription =
-    contentWrapper
+    contentWrapper [ css [ paddingLarge ] ]
         [ homeParagraph []
             [ text Contents.description ]
         , homeParagraph []
             [ text Contents.invite
-            , link Contents.telegram
+            , linkDefault Contents.telegram
             , text "."
             ]
         ]
@@ -74,11 +84,24 @@ homeSection =
 
 
 languagesSection =
-    section [] []
+    section
+        [ css [ Css.height (rem 8) ] ]
+        []
+
+
+repositoriesList =
+    List.map repositoryContainer Contents.repositories
 
 
 repositoriesSection =
-    section [] []
+    section
+        [ css
+            [ displayFlex
+            , flexWrap Css.wrap
+            , justifyContent spaceAround
+            ]
+        ]
+        repositoriesList
 
 
 lambdaFooter =
