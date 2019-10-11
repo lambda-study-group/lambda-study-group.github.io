@@ -10,7 +10,12 @@ colors =
     , background = hex "000000"
     , combinator = hex "36223A"
     , pink = hex "d872e9"
+    , footer = hex "1C1C1C"
     }
+
+
+
+-- Remove rem unit?
 
 
 textSize =
