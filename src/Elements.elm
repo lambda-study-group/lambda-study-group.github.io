@@ -22,8 +22,17 @@ import Styles
 -- TODO: all elements 'styled' must have the name with suffix "Styled"
 
 
-lambdaLogo =
-    img [ src "assets/logo.svg", Attrs.width 120 ] []
+lambdaLogo : Int -> Html msg
+lambdaLogo width =
+    img [ src "assets/logo.svg", Attrs.width width ] []
+
+
+lambdaLogoLarge =
+    lambdaLogo 120
+
+
+lambdaLogoMedium =
+    lambdaLogo 44
 
 
 contentWrapper =
@@ -45,13 +54,28 @@ spanStyled =
         [ textColor, font ]
 
 
-headerTitle txt =
-    h1
+type HeaderSize
+    = Large
+    | XLarge
+
+
+headerSize hsize =
+    case hsize of
+        Large ->
+            batch [ fontSize (px 32) ]
+
+        XLarge ->
+            textXLarge
+
+
+headerTitle : HeaderSize -> String -> Html msg
+headerTitle size txt =
+    h2
         [ css
             [ textColor
             , padding (px 0)
             , margin2 (rem 1.5) (rem 0)
-            , textXLarge
+            , headerSize size
             , font
             ]
         ]
