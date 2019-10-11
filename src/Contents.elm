@@ -65,7 +65,7 @@ exercices =
     }
 
 
-tranlations =
+translations =
     { title = "Traduções"
     , content =
         [ [ "https://github.com/lambda-study-group/Functional-Light-JS"
@@ -73,3 +73,20 @@ tranlations =
           ]
         ]
     }
+
+
+toLinkData list =
+    case list of
+        [ url, label ] ->
+            { url = url, label = label }
+
+        _ ->
+            { url = "", label = "" }
+
+
+convertRepository ({ content } as data) =
+    { title = data.title, content = List.map toLinkData content }
+
+
+repositories =
+    List.map convertRepository [ projects, exercices, translations ]
