@@ -32,6 +32,10 @@ font =
         ]
 
 
+
+-- TODO: try refact this, plz
+
+
 textXLarge =
     batch [ fontSize SG.textSize.xLarge ]
 
@@ -40,9 +44,17 @@ textLarge =
     batch [ fontSize SG.textSize.large ]
 
 
+textMedium =
+    batch [ fontSize SG.textSize.medium ]
+
+
 textColor =
     batch [ color SG.colors.text ]
 
 
 linkColor =
     batch [ color SG.colors.link ]
+
+
+backgroundStyle =
+    batch [ backgroundColor SG.colors.background ]
