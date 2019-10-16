@@ -9,6 +9,7 @@ colors =
     , icon = hex "ffffff"
     , background = hex "000000"
     , combinator = hex "36223A"
+    , language = hex "C770D5"
     , pink = hex "d872e9"
     , footer = hex "1C1C1C"
     }
