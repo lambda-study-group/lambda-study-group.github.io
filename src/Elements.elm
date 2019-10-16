@@ -3,6 +3,7 @@ module Elements exposing (..)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attrs exposing (..)
+import StyleGuide as Theme
 import Styles
     exposing
         ( backgroundStyle
@@ -33,6 +34,10 @@ lambdaLogoLarge =
 
 lambdaLogoMedium =
     lambdaLogo 44
+
+
+lambdaLogoSmall =
+    lambdaLogo 18
 
 
 contentWrapper =
@@ -164,3 +169,23 @@ repositoryContainer { title, content } =
             ]
             (List.map repositoryRow content)
         ]
+
+
+languageWrapper ({ label, rot } as lang) =
+    let
+        ( tx, ty ) =
+            lang.translate
+    in
+    div
+        [ css
+            [ color Theme.colors.language
+            , transforms
+                [ rotate (deg rot)
+                , scale lang.scale
+                , translate2 (px tx) (px ty)
+                ]
+            , textLarge
+            , Styles.font
+            ]
+        ]
+        [ text label ]
