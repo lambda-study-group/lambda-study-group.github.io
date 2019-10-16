@@ -11,6 +11,8 @@ import Elements
         , headerTitle
         , lambdaLogoLarge
         , lambdaLogoMedium
+        , lambdaLogoSmall
+        , languageWrapper
         , linkDefault
         , linkText
         , navigationIcon
@@ -23,6 +25,10 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (..)
 import StyleGuide as Theme
 import Styles exposing (backgroundStyle, paddingLarge, textMedium)
+
+
+
+-- TODO: refact this module
 
 
 globalCss =
@@ -93,8 +99,27 @@ homeSection =
 
 languagesSection =
     section
-        [ css [ Css.height (rem 8) ] ]
-        []
+        [ css
+            [ Css.height (rem 10)
+            , displayFlex
+            , padding2 (rem 12) (rem 2)
+            , maxWidth (px 1440)
+            , overflow Css.hidden
+            , Css.width (pct 100)
+            ]
+        ]
+        [ div [ css [ padding4 (rem 0) (rem 3) (rem 0) (rem 1) ] ] [ lambdaLogoSmall ]
+        , div
+            [ css
+                [ minWidth (px 700)
+                , maxWidth (px 1440)
+                , displayFlex
+                , flex (int 1)
+                , justifyContent spaceBetween
+                ]
+            ]
+            (List.map languageWrapper Contents.languages)
+        ]
 
 
 repositoriesList =
