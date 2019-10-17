@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Browser
 import Contents
 import Css exposing (..)
 import Css.Global exposing (body, global)
@@ -182,16 +183,40 @@ lambdaFooter =
         ]
 
 
-view =
-    div
-        []
-        [ globalCss
-        , homeSection
-        , languagesSection
-        , repositoriesSection
-        , lambdaFooter
-        ]
+type alias Model =
+    String
+
+
+init : () -> ( Model, Cmd msg )
+init _ =
+    ( "void", Cmd.none )
+
+
+view model =
+    { title = Contents.title
+    , body =
+        List.map toUnstyled
+            [ globalCss
+            , homeSection
+            , languagesSection
+            , repositoriesSection
+            , lambdaFooter
+            ]
+    }
+
+
+update _ model =
+    ( model, Cmd.none )
+
+
+subscriptions _ =
+    Sub.none
 
 
 main =
-    toUnstyled view
+    Browser.document
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
