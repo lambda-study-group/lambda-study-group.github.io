@@ -1,6 +1,10 @@
 module Main exposing (..)
 
 import Browser
+import CombinatorsAnimated
+    exposing
+        ( combinatorsBackground
+        )
 import Contents
 import Css exposing (..)
 import Css.Global exposing (body, global)
@@ -78,23 +82,28 @@ lambdaDescription =
         ]
 
 
-homeSection =
+homeSection : Model -> Html msg
+homeSection model =
     section
-        [ css
-            [ displayFlex
-            , justifyContent center
-            , flexDirection column
-            , alignItems center
-            , padding3 (rem 6) (rem 0) (rem 0)
-            , maxWidth (px 720)
-            , boxSizing borderBox
-            , margin auto
+        [ css [ position relative, minHeight (vh 100) ] ]
+        [ combinatorsBackground model.combinators
+        , div
+            [ css
+                [ displayFlex
+                , justifyContent center
+                , flexDirection column
+                , alignItems center
+                , padding3 (rem 6) (rem 0) (rem 0)
+                , maxWidth (px 720)
+                , boxSizing borderBox
+                , margin auto
+                ]
             ]
-        ]
-        [ lambdaLogoLarge
-        , lambdaTitleXLarge
-        , lambdaSeparator
-        , lambdaDescription
+            [ lambdaLogoLarge
+            , lambdaTitleXLarge
+            , lambdaSeparator
+            , lambdaDescription
+            ]
         ]
 
 
@@ -184,20 +193,30 @@ lambdaFooter =
 
 
 type alias Model =
-    String
+    { combinators : CombinatorsAnimated.Model
+    }
 
 
-init : () -> ( Model, Cmd msg )
+type Msg
+    = UpdateCombinators CombinatorsAnimated.Msg
+
+
+init : () -> ( Model, Cmd Msg )
 init _ =
-    ( "void", Cmd.none )
+    ( { combinators =
+            CombinatorsAnimated.initModel
+      }
+    , Cmd.map UpdateCombinators (CombinatorsAnimated.initAnimation "home")
+    )
 
 
+view : Model -> Browser.Document msg
 view model =
     { title = Contents.title
     , body =
         List.map toUnstyled
             [ globalCss
-            , homeSection
+            , homeSection model
             , languagesSection
             , repositoriesSection
             , lambdaFooter
@@ -205,12 +224,19 @@ view model =
     }
 
 
-update _ model =
-    ( model, Cmd.none )
+update msg model =
+    case msg of
+        UpdateCombinators msgCombinators ->
+            let
+                ( combinators, cmdMsg ) =
+                    CombinatorsAnimated.update msgCombinators model.combinators
+            in
+            ( { model | combinators = combinators }, Cmd.map UpdateCombinators cmdMsg )
 
 
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    Sub.map UpdateCombinators
+        (CombinatorsAnimated.subscriptions model.combinators)
 
 
 main =
