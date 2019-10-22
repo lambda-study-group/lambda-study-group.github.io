@@ -2,12 +2,13 @@ module CombinatorsAnimated exposing
     ( Model
     , Msg(..)
     , combinatorsBackground
-    , initAnimation
     , initModel
     , subscriptions
+    , tick
     , update
     )
 
+import Array
 import Browser.Dom exposing (getElement)
 import Browser.Events exposing (onAnimationFrame)
 import Css exposing (..)
@@ -33,110 +34,93 @@ import Time
 
 type alias Combinator =
     { letter : String
-    , delay : Int
     , initialTime : Int
-    , translate : ( Float, Float )
-    , shiftX : Float
-    , hidden : Bool
+    , position : ( Float, Float )
+    , rotate : Float
+    , opacity : Float
     }
 
 
 type alias Model =
-    { totalHeight : Float
+    { initialTime : Int
+    , curLetter : String
+    , curCombinator : Combinator
     , combinators : List Combinator
     }
 
 
 type Msg
-    = Init (Result Browser.Dom.Error ( Time.Posix, Browser.Dom.Element ))
-    | Tick Time.Posix
+    = Tick Time.Posix
 
 
 duration =
-    9000
+    2250
 
 
-setInitialTime currentTime combinator =
-    { combinator
-        | initialTime = currentTime
-    }
-
-
-updateCombinators : Int -> Float -> Combinator -> Combinator
-updateCombinators currentTime totalHeight ({ initialTime, delay, translate } as combinator) =
+ease t =
     let
-        elapsed =
-            currentTime - initialTime - delay
-
-        ( progress, hidden ) =
-            if elapsed < 0 then
-                ( 0, True )
-
-            else
-                ( Basics.min ((elapsed |> toFloat) / duration) 1.0, False )
-
-        ty =
-            totalHeight * progress
-
-        initialTimeNext =
-            if progress == 1.0 then
-                currentTime
-
-            else
-                initialTime
+        x =
+            t - 1
     in
-    { combinator
-        | initialTime = initialTimeNext
-        , translate = Tuple.mapSecond (always ty) translate
-        , hidden = hidden
-    }
+    x * x * x + 1
+
+
+updateCombinators curTime model next others =
+    let
+        { curCombinator, initialTime } =
+            model
+
+        elapsed =
+            curTime - initialTime
+
+        progress =
+            Basics.min ((elapsed |> toFloat) / duration |> ease) 1.0
+    in
+    if progress < 1.0 then
+        { model
+            | curCombinator = { curCombinator | opacity = progress }
+            , combinators = { next | opacity = 1 - progress } :: others
+        }
+
+    else
+        { model
+            | curCombinator = { next | opacity = 0 }
+            , combinators = others ++ [ { curCombinator | opacity = 1 } ]
+            , initialTime = curTime
+            , curLetter = next.letter
+        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Init result ->
-            case result of
-                Result.Ok ( timePosix, { element } as el ) ->
-                    let
-                        currentTime =
-                            Time.posixToMillis timePosix
-                    in
-                    ( { model
-                        | totalHeight = element.height
-                        , combinators = List.map (setInitialTime currentTime) model.combinators
-                      }
-                    , Cmd.none
-                    )
-
-                Result.Err _ ->
-                    ( model, Cmd.none )
-
         Tick timePosix ->
             let
                 currentTime =
                     Time.posixToMillis timePosix
 
-                combinators =
-                    List.map
-                        (updateCombinators currentTime model.totalHeight)
-                        model.combinators
+                nextModel =
+                    case model.combinators of
+                        h :: t ->
+                            updateCombinators currentTime model h t
+
+                        _ ->
+                            model
             in
-            ( { model
-                | combinators = combinators
-              }
-            , Cmd.none
-            )
+            if model.initialTime == 0 then
+                ( { model
+                    | initialTime = currentTime
+                  }
+                , Cmd.none
+                )
+
+            else
+                ( nextModel
+                , Cmd.none
+                )
 
 
-initAnimation : String -> Cmd Msg
-initAnimation parentId =
-    Task.attempt
-        Init
-        (Task.map2 (\r -> \t -> ( t, r )) (getElement parentId) Time.now)
-
-
-onTick =
+tick =
     Task.perform Tick Time.now
 
 
@@ -146,49 +130,57 @@ onTick =
 
 initModel : Model
 initModel =
-    { totalHeight = 0
+    { initialTime = 0
+    , curLetter = "I"
+    , curCombinator =
+        { letter = "I"
+        , initialTime = 0
+        , position = ( 25, 20 )
+        , rotate = 10
+        , opacity = 1
+        }
     , combinators =
-        [ { letter = "S"
-          , delay = 6000
-          , initialTime = 0
-          , translate = ( 0, 0 )
-          , shiftX = 10
-          , hidden = True
-          }
-        , { letter = "K"
-          , delay = 100
-          , initialTime = 0
-          , translate = ( 0, 0 )
-          , shiftX = 20
-          , hidden = True
-          }
-        , { letter = "I"
-          , delay = 5000
-          , initialTime = 0
-          , translate = ( 0, 0 )
-          , shiftX = 80
-          , hidden = True
-          }
-        , { letter = "W"
-          , delay = 2000
-          , initialTime = 0
-          , translate = ( 0, 0 )
-          , shiftX = 90
-          , hidden = True
+        [ { letter = "K"
+          , initialTime = 25
+          , position = ( 75, 40 )
+          , rotate = 10
+          , opacity = 1
           }
         , { letter = "B"
-          , delay = 11000
-          , initialTime = 0
-          , translate = ( 0, 0 )
-          , shiftX = 85
-          , hidden = True
+          , initialTime = 25
+          , position = ( 20, 40 )
+          , rotate = -3
+          , opacity = 1
+          }
+        , { letter = "C"
+          , initialTime = 75
+          , position = ( 80, 15 )
+          , rotate = 25
+          , opacity = 1
+          }
+        , { letter = "W"
+          , initialTime = 75
+          , position = ( 10, 80 )
+          , rotate = -2
+          , opacity = 1
+          }
+        , { letter = "S"
+          , initialTime = 25
+          , position = ( 60, 10 )
+          , rotate = -3
+          , opacity = 1
           }
         , { letter = "Y"
-          , delay = 13000
-          , initialTime = 0
-          , translate = ( 0, 0 )
-          , shiftX = 15
-          , hidden = True
+          , initialTime = 75
+          , position = ( 10, 10 )
+          , rotate = -4
+          , opacity = 1
+          }
+        , { letter = "T"
+          , initialTime = 25
+          , position = ( 80, 80 )
+          , rotate = 4
+          , opacity = 1
           }
         ]
     }
@@ -196,61 +188,51 @@ initModel =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if model.totalHeight == 0 then
-        Sub.none
-
-    else
-        onAnimationFrame Tick
+    onAnimationFrame Tick
 
 
-combinatorWrapper : Combinator -> Html msg
-combinatorWrapper data =
+combinatorWrapper curLetter { position, rotate, letter, opacity } =
     let
-        ( tx, ty ) =
-            data.translate
+        ( x, y ) =
+            position
 
-        stx =
-            String.fromFloat tx
-
-        sty =
-            String.fromFloat -ty
-
-        sx =
-            data.shiftX
-
-        label =
-            data.letter
-
-        display =
-            if data.hidden then
-                "none"
+        curColor =
+            if curLetter == letter then
+                Theme.colors.pink
 
             else
-                "block"
+                Theme.colors.combinator
     in
     div
         [ css
-            [ position absolute
-            , bottom (px 20)
-            , left (pct sx)
-            , textXLarge
-            , color Theme.colors.combinator
+            [ Css.position absolute
+            , top (px 0)
+            , left (pct x)
+            , top (pct y)
+            , fontSize (px 60)
+            , color curColor
+            , transform (Css.rotate (deg rotate))
+            , fontFamilies [ "Rhodium Libre", "serif" ]
             ]
-        , style "transform" ("translate3d(" ++ stx ++ "px," ++ sty ++ "px, 0)")
-        , style "transform-origin" "0 0"
-        , style "display" display
+        , style "opacity" (String.fromFloat opacity)
         ]
-        [ text label ]
+        [ text letter ]
 
 
 combinatorsBackground : Model -> Html msg
 combinatorsBackground model =
+    let
+        { curLetter, combinators, curCombinator } =
+            model
+    in
     div
-        [ id "home"
-        , css
+        [ css
             [ position absolute
             , Css.width (pct 100)
             , Css.height (pct 100)
             ]
         ]
-        (List.map combinatorWrapper model.combinators)
+        (List.map
+            (combinatorWrapper curLetter)
+            (curCombinator :: combinators)
+        )
