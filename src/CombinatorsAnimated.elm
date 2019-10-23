@@ -15,6 +15,8 @@ import Css exposing (..)
 import Debug as Dbg
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attrs exposing (..)
+import Html.Styled.Keyed as Keyed
+import Html.Styled.Lazy exposing (lazy)
 import StyleGuide as Theme
 import Styles
     exposing
@@ -34,17 +36,17 @@ import Time
 
 type alias Combinator =
     { letter : String
-    , initialTime : Int
     , position : ( Float, Float )
     , rotate : Float
+    , transition : Bool
     , opacity : Float
     }
 
 
 type alias Model =
     { initialTime : Int
-    , curLetter : String
     , curCombinator : Combinator
+    , preCombinator : Combinator
     , combinators : List Combinator
     }
 
@@ -54,7 +56,7 @@ type Msg
 
 
 duration =
-    2250
+    3250
 
 
 ease t =
@@ -65,9 +67,13 @@ ease t =
     x * x * x + 1
 
 
+lerp start end norm =
+    start + norm * (end - start)
+
+
 updateCombinators curTime model next others =
     let
-        { curCombinator, initialTime } =
+        { curCombinator, initialTime, preCombinator } =
             model
 
         elapsed =
@@ -78,16 +84,21 @@ updateCombinators curTime model next others =
     in
     if progress < 1.0 then
         { model
-            | curCombinator = { curCombinator | opacity = progress }
-            , combinators = { next | opacity = 1 - progress } :: others
+            | curCombinator = { curCombinator | opacity = lerp 0.2 1 progress }
+            , preCombinator = { preCombinator | opacity = lerp 1 0.2 progress }
+            , combinators = { next | opacity = lerp 1 0.4 progress } :: others
         }
 
     else
         { model
-            | curCombinator = { next | opacity = 0 }
-            , combinators = others ++ [ { curCombinator | opacity = 1 } ]
+            | curCombinator =
+                { next
+                    | opacity = 0.4
+                    , transition = True
+                }
+            , preCombinator = { curCombinator | opacity = 1, transition = True }
+            , combinators = others ++ [ { preCombinator | opacity = 1, transition = False } ]
             , initialTime = curTime
-            , curLetter = next.letter
         }
 
 
@@ -131,54 +142,54 @@ tick =
 initModel : Model
 initModel =
     { initialTime = 0
-    , curLetter = "I"
     , curCombinator =
         { letter = "I"
-        , initialTime = 0
-        , position = ( 25, 20 )
+        , position = ( 25, 10 )
+        , transition = True
+        , rotate = 10
+        , opacity = 0.3
+        }
+    , preCombinator =
+        { letter = "K"
+        , position = ( 85, 40 )
+        , transition = True
         , rotate = 10
         , opacity = 1
         }
     , combinators =
-        [ { letter = "K"
-          , initialTime = 25
-          , position = ( 75, 40 )
-          , rotate = 10
-          , opacity = 1
-          }
-        , { letter = "B"
-          , initialTime = 25
-          , position = ( 20, 40 )
+        [ { letter = "B"
+          , position = ( 10, 40 )
+          , transition = False
           , rotate = -3
           , opacity = 1
           }
         , { letter = "C"
-          , initialTime = 75
           , position = ( 80, 15 )
+          , transition = False
           , rotate = 25
           , opacity = 1
           }
         , { letter = "W"
-          , initialTime = 75
-          , position = ( 10, 80 )
+          , position = ( 15, 80 )
+          , transition = False
           , rotate = -2
           , opacity = 1
           }
         , { letter = "S"
-          , initialTime = 25
-          , position = ( 60, 10 )
+          , position = ( 70, 10 )
+          , transition = False
           , rotate = -3
           , opacity = 1
           }
         , { letter = "Y"
-          , initialTime = 75
-          , position = ( 10, 10 )
+          , position = ( 15, 15 )
+          , transition = False
           , rotate = -4
           , opacity = 1
           }
         , { letter = "T"
-          , initialTime = 25
           , position = ( 80, 80 )
+          , transition = False
           , rotate = 4
           , opacity = 1
           }
@@ -191,13 +202,17 @@ subscriptions model =
     onAnimationFrame Tick
 
 
-combinatorWrapper curLetter { position, rotate, letter, opacity } =
+combinatorKeyed combinator =
+    ( combinator.letter, lazy combinatorWrapper combinator )
+
+
+combinatorWrapper { position, rotate, letter, opacity, transition } =
     let
         ( x, y ) =
             position
 
         curColor =
-            if curLetter == letter then
+            if transition == True then
                 Theme.colors.pink
 
             else
@@ -209,7 +224,7 @@ combinatorWrapper curLetter { position, rotate, letter, opacity } =
             , top (px 0)
             , left (pct x)
             , top (pct y)
-            , fontSize (px 60)
+            , fontSize (px 48)
             , color curColor
             , transform (Css.rotate (deg rotate))
             , fontFamilies [ "Rhodium Libre", "serif" ]
@@ -222,10 +237,10 @@ combinatorWrapper curLetter { position, rotate, letter, opacity } =
 combinatorsBackground : Model -> Html msg
 combinatorsBackground model =
     let
-        { curLetter, combinators, curCombinator } =
+        { combinators, curCombinator, preCombinator } =
             model
     in
-    div
+    Keyed.node "div"
         [ css
             [ position absolute
             , Css.width (pct 100)
@@ -233,6 +248,6 @@ combinatorsBackground model =
             ]
         ]
         (List.map
-            (combinatorWrapper curLetter)
-            (curCombinator :: combinators)
+            combinatorKeyed
+            (curCombinator :: preCombinator :: combinators)
         )

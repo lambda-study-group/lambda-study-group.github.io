@@ -97,6 +97,8 @@ homeSection model =
                 , maxWidth (px 720)
                 , boxSizing borderBox
                 , margin auto
+                , zIndex (int 2)
+                , position relative
                 ]
             ]
             [ lambdaLogoLarge
