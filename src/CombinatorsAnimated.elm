@@ -2,9 +2,9 @@ module CombinatorsAnimated exposing
     ( Model
     , Msg(..)
     , combinatorsBackground
+    , init
     , initModel
     , subscriptions
-    , tick
     , update
     )
 
@@ -36,99 +36,108 @@ import Time
 
 type alias Combinator =
     { letter : String
+    , delay : Int
+    , initialTime : Int
     , position : ( Float, Float )
-    , rotate : Float
-    , transition : Bool
     , opacity : Float
     }
 
 
 type alias Model =
-    { initialTime : Int
-    , curCombinator : Combinator
-    , preCombinator : Combinator
+    { totalHeight : Float
     , combinators : List Combinator
     }
 
 
 type Msg
-    = Tick Time.Posix
+    = Init (Result Browser.Dom.Error ( Time.Posix, Browser.Dom.Element ))
+    | Tick Time.Posix
 
 
 duration =
-    3250
-
-
-ease t =
-    let
-        x =
-            t - 1
-    in
-    x * x * x + 1
+    9250
 
 
 lerp start end norm =
     start + norm * (end - start)
 
 
-updateCombinators curTime model next others =
+updateCombinator curTime totalHeight combinator =
     let
-        { curCombinator, initialTime, preCombinator } =
-            model
+        { initialTime, opacity, position, delay } =
+            combinator
+
+        ( px, _ ) =
+            position
 
         elapsed =
-            curTime - initialTime
+            Basics.max (curTime - initialTime - delay) 0
 
         progress =
-            Basics.min ((elapsed |> toFloat) / duration |> ease) 1.0
+            Basics.min ((elapsed |> toFloat) / duration) 1.0
     in
     if progress < 1.0 then
-        { model
-            | curCombinator = { curCombinator | opacity = lerp 0.2 1 progress }
-            , preCombinator = { preCombinator | opacity = lerp 1 0.2 progress }
-            , combinators = { next | opacity = lerp 1 0.4 progress } :: others
+        { combinator
+            | opacity = ((lerp -1 1 progress |> abs) - 1) |> abs
+            , position = ( px, progress * totalHeight )
         }
 
     else
-        { model
-            | curCombinator =
-                { next
-                    | opacity = 0.4
-                    , transition = True
-                }
-            , preCombinator = { curCombinator | opacity = 1, transition = True }
-            , combinators = others ++ [ { preCombinator | opacity = 1, transition = False } ]
+        { combinator
+            | delay = 0
+            , opacity = 0
             , initialTime = curTime
+            , position = ( px, 0 )
         }
+
+
+setInitialTime currentTime ({ initialTime } as comb) =
+    { comb | initialTime = currentTime }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        combinators =
+            model.combinators
+    in
     case msg of
+        Init result ->
+            case result of
+                Result.Ok ( timePosix, { element } ) ->
+                    let
+                        currentTime =
+                            Time.posixToMillis timePosix
+                    in
+                    ( { model
+                        | totalHeight = element.height
+                        , combinators = List.map (setInitialTime currentTime) combinators
+                      }
+                    , Cmd.none
+                    )
+
+                Result.Err _ ->
+                    ( model, Cmd.none )
+
         Tick timePosix ->
             let
                 currentTime =
                     Time.posixToMillis timePosix
 
-                nextModel =
-                    case model.combinators of
-                        h :: t ->
-                            updateCombinators currentTime model h t
-
-                        _ ->
-                            model
+                totalHeight =
+                    model.totalHeight
             in
-            if model.initialTime == 0 then
-                ( { model
-                    | initialTime = currentTime
-                  }
-                , Cmd.none
-                )
+            ( { model
+                | combinators = List.map (updateCombinator currentTime totalHeight) combinators
+              }
+            , Cmd.none
+            )
 
-            else
-                ( nextModel
-                , Cmd.none
-                )
+
+init =
+    Task.attempt
+        Init
+        (Task.map2 (\r -> \t -> ( t, r )) (getElement "combinators") Time.now)
 
 
 tick =
@@ -141,57 +150,67 @@ tick =
 
 initModel : Model
 initModel =
-    { initialTime = 0
-    , curCombinator =
-        { letter = "I"
-        , position = ( 25, 10 )
-        , transition = True
-        , rotate = 10
-        , opacity = 0.3
-        }
-    , preCombinator =
-        { letter = "K"
-        , position = ( 85, 40 )
-        , transition = True
-        , rotate = 10
-        , opacity = 1
-        }
+    { totalHeight = 0
     , combinators =
-        [ { letter = "B"
-          , position = ( 10, 40 )
-          , transition = False
-          , rotate = -3
-          , opacity = 1
+        [ { letter = "I"
+          , initialTime = 0
+          , delay = 5500
+          , position = ( 12, 0 )
+          , opacity = 0
+          }
+        , { letter = "K"
+          , initialTime = 0
+          , delay = 500
+          , position = ( 17, 0 )
+          , opacity = 0
+          }
+        , { letter = "B"
+          , initialTime = 0
+          , delay = 13500
+          , position = ( 23, 0 )
+          , opacity = 0
           }
         , { letter = "C"
-          , position = ( 80, 15 )
-          , transition = False
-          , rotate = 25
-          , opacity = 1
+          , initialTime = 0
+          , delay = 8500
+          , position = ( 29, 0 )
+          , opacity = 0
           }
         , { letter = "W"
-          , position = ( 15, 80 )
-          , transition = False
-          , rotate = -2
-          , opacity = 1
+          , initialTime = 0
+          , delay = 10500
+          , position = ( 35, 0 )
+          , opacity = 0
           }
         , { letter = "S"
-          , position = ( 70, 10 )
-          , transition = False
-          , rotate = -3
-          , opacity = 1
+          , initialTime = 0
+          , delay = 11500
+          , position = ( 64, 0 )
+          , opacity = 0
           }
         , { letter = "Y"
-          , position = ( 15, 15 )
-          , transition = False
-          , rotate = -4
-          , opacity = 1
+          , initialTime = 0
+          , delay = 7500
+          , position = ( 70, 0 )
+          , opacity = 0
           }
         , { letter = "T"
-          , position = ( 80, 80 )
-          , transition = False
-          , rotate = 4
-          , opacity = 1
+          , initialTime = 0
+          , delay = 9000
+          , position = ( 76, 0 )
+          , opacity = 0
+          }
+        , { letter = "A"
+          , initialTime = 0
+          , delay = 14500
+          , position = ( 83, 0 )
+          , opacity = 0
+          }
+        , { letter = "P"
+          , initialTime = 0
+          , delay = 2500
+          , position = ( 90, 0 )
+          , opacity = 0
           }
         ]
     }
@@ -206,30 +225,25 @@ combinatorKeyed combinator =
     ( combinator.letter, lazy combinatorWrapper combinator )
 
 
-combinatorWrapper { position, rotate, letter, opacity, transition } =
+combinatorWrapper { position, letter, opacity, delay } =
     let
         ( x, y ) =
             position
 
-        curColor =
-            if transition == True then
-                Theme.colors.pink
-
-            else
-                Theme.colors.combinator
+        translateStr =
+            "translate3d(0px," ++ String.fromFloat -y ++ "px, 0px)"
     in
     div
         [ css
             [ Css.position absolute
-            , top (px 0)
+            , fontSize (px 36)
             , left (pct x)
-            , top (pct y)
-            , fontSize (px 48)
-            , color curColor
-            , transform (Css.rotate (deg rotate))
+            , bottom (px -36)
+            , color Theme.colors.pink
             , fontFamilies [ "Rhodium Libre", "serif" ]
             ]
         , style "opacity" (String.fromFloat opacity)
+        , style "transform" translateStr
         ]
         [ text letter ]
 
@@ -237,11 +251,12 @@ combinatorWrapper { position, rotate, letter, opacity, transition } =
 combinatorsBackground : Model -> Html msg
 combinatorsBackground model =
     let
-        { combinators, curCombinator, preCombinator } =
+        { combinators } =
             model
     in
     Keyed.node "div"
-        [ css
+        [ id "combinators"
+        , css
             [ position absolute
             , Css.width (pct 100)
             , Css.height (pct 100)
@@ -249,5 +264,5 @@ combinatorsBackground model =
         ]
         (List.map
             combinatorKeyed
-            (curCombinator :: preCombinator :: combinators)
+            combinators
         )

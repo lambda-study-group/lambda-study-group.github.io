@@ -208,7 +208,7 @@ init _ =
     ( { combinators =
             CombinatorsAnimated.initModel
       }
-    , Cmd.map UpdateCombinators CombinatorsAnimated.tick
+    , Cmd.map UpdateCombinators CombinatorsAnimated.init
     )
 
 
