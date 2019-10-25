@@ -12,6 +12,7 @@ import Array
 import Browser.Dom exposing (getElement)
 import Browser.Events exposing (onAnimationFrame)
 import Css exposing (..)
+import Css.Media as Media exposing (only, screen, withMedia)
 import Debug as Dbg
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attrs exposing (..)
@@ -241,6 +242,9 @@ combinatorWrapper { position, letter, opacity, delay } =
             , bottom (px -36)
             , color Theme.colors.pink
             , fontFamilies [ "Rhodium Libre", "serif" ]
+            , withMedia
+                [ only screen [ Media.maxWidth (px 800) ] ]
+                [ fontSize (px 18) ]
             ]
         , style "opacity" (String.fromFloat opacity)
         , style "transform" translateStr

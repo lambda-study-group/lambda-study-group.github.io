@@ -8,6 +8,7 @@ import CombinatorsAnimated
 import Contents
 import Css exposing (..)
 import Css.Global exposing (body, global)
+import Css.Media as Media exposing (only, screen, withMedia)
 import Elements
     exposing
         ( HeaderSize(..)
@@ -29,7 +30,7 @@ import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (..)
 import StyleGuide as Theme
-import Styles exposing (backgroundStyle, paddingLarge, textMedium)
+import Styles exposing (backgroundStyle, paddingLarge, paddingSmall, textMedium, textNormal)
 
 
 
@@ -67,11 +68,25 @@ lambdaSeparator =
 
 
 homeParagraph =
-    styled textStyled [ textMedium, textAlign center ]
+    styled textStyled
+        [ textMedium
+        , textAlign center
+
+        -- todo: centralize the breakpoints
+        , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
+            [ fontSize (rem 1.5) ]
+        ]
 
 
 lambdaDescription =
-    contentWrapper [ css [ paddingLarge ] ]
+    contentWrapper
+        [ css
+            [ paddingLarge
+            , backgroundColor (hex "00000042")
+            , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
+                [ paddingSmall ]
+            ]
+        ]
         [ homeParagraph []
             [ text Contents.description ]
         , homeParagraph []
@@ -99,6 +114,9 @@ homeSection model =
                 , margin auto
                 , zIndex (int 2)
                 , position relative
+                , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
+                    [ maxWidth (px 520)
+                    ]
                 ]
             ]
             [ lambdaLogoLarge
@@ -118,6 +136,8 @@ languagesSection =
             , maxWidth (px 1440)
             , overflow Css.hidden
             , Css.width (pct 100)
+            , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
+                [ padding2 (rem 8) (rem 1.5) ]
             ]
         ]
         [ div [ css [ padding4 (rem 0) (rem 3) (rem 0) (rem 1) ] ] [ lambdaLogoSmall ]
@@ -163,7 +183,13 @@ footerLink { icon, link } =
     div [ css [ displayFlex, padding3 (rem 2) (rem 1) (rem 0) ] ]
         [ icon
         , div [ css [ paddingLeft (rem 1.5) ] ]
-            [ spanStyled [ css [ textMedium ] ]
+            [ spanStyled
+                [ css
+                    [ textMedium
+                    , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
+                        [ fontSize (rem 1.5) ]
+                    ]
+                ]
                 [ linkText link ]
             ]
         ]

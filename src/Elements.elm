@@ -1,6 +1,7 @@
 module Elements exposing (..)
 
 import Css exposing (..)
+import Css.Media as Media exposing (only, screen, withMedia)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attrs exposing (..)
 import StyleGuide as Theme
@@ -23,26 +24,39 @@ import Styles
 -- TODO: all elements 'styled' must have the name with suffix "Styled"
 
 
-lambdaLogo : Int -> Html msg
-lambdaLogo width =
-    img [ src "assets/logo.svg", Attrs.width width ] []
+lambdaLogo : Float -> Float -> Html msg
+lambdaLogo width1 width2 =
+    img
+        [ src "assets/logo.svg"
+        , css
+            [ Css.width (px width1)
+            , withMedia
+                [ only screen [ Media.maxWidth (px 800) ] ]
+                [ Css.width (px width2) ]
+            ]
+        ]
+        []
 
 
 lambdaLogoLarge =
-    lambdaLogo 120
+    lambdaLogo 120 60
 
 
 lambdaLogoMedium =
-    lambdaLogo 44
+    lambdaLogo 44 18
 
 
 lambdaLogoSmall =
-    lambdaLogo 18
+    lambdaLogo 18 10
 
 
 contentWrapper =
     styled div
-        [ borderPink ]
+        [ borderPink
+        , withMedia
+            [ only screen [ Media.maxWidth (px 800) ] ]
+            [ Css.borderWidth (px 0) ]
+        ]
 
 
 textStyled =
@@ -73,6 +87,15 @@ headerSize hsize =
             textXLarge
 
 
+headerSizeSecondary hsize =
+    case hsize of
+        Large ->
+            batch [ fontSize (px 24) ]
+
+        XLarge ->
+            batch [ fontSize (px 28) ]
+
+
 headerTitle : HeaderSize -> String -> Html msg
 headerTitle size txt =
     h2
@@ -82,6 +105,9 @@ headerTitle size txt =
             , margin2 (rem 1.5) (rem 0)
             , headerSize size
             , font
+            , withMedia
+                [ only screen [ Media.maxWidth (px 800) ] ]
+                [ headerSizeSecondary size ]
             ]
         ]
         [ text txt ]
@@ -104,7 +130,16 @@ linkText =
 
 
 icon srcIcon =
-    img [ src srcIcon, Attrs.width 24 ] []
+    img
+        [ src srcIcon
+        , css
+            [ Css.width (px 24)
+            , withMedia
+                [ only screen [ Media.maxWidth (px 800) ] ]
+                [ Css.width (px 16) ]
+            ]
+        ]
+        []
 
 
 githubIcon =
@@ -134,12 +169,23 @@ repositoryRow repoLinkData =
                 -- TODO: use the StyleGuide
                 -- TODO: add an interaction here
                 [ paddingRight (rem 3)
+                , withMedia
+                    [ only screen [ Media.maxWidth (px 800) ] ]
+                    [ paddingRight (rem 1.5) ]
                 ]
             ]
             [ githubIcon ]
         , div []
             -- TODO: transform the link* in a styled element
-            [ spanStyled [ css [ textMedium ] ] [ linkText repoLinkData ]
+            [ spanStyled
+                [ css
+                    [ textMedium
+                    , withMedia
+                        [ only screen [ Media.maxWidth (px 800) ] ]
+                        [ fontSize (rem 1.5) ]
+                    ]
+                ]
+                [ linkText repoLinkData ]
             ]
         ]
 
@@ -149,7 +195,14 @@ repositoryRow repoLinkData =
 
 
 repositoryContainer { title, content } =
-    div [ css [ padding2 (rem 4) (rem 0) ] ]
+    div
+        [ css
+            [ padding2 (rem 4) (rem 0)
+            , withMedia
+                [ only screen [ Media.maxWidth (px 800) ] ]
+                [ Css.maxWidth (pct 100) ]
+            ]
+        ]
         -- TODO: add an interation here
         [ contentWrapper
             [ css
@@ -159,12 +212,24 @@ repositoryContainer { title, content } =
                 , marginBottom (rem -2)
                 ]
             ]
-            [ spanStyled [ css [ textLarge ] ] [ text title ] ]
+            [ spanStyled
+                [ css
+                    [ textLarge
+                    , withMedia
+                        [ only screen [ Media.maxWidth (px 800) ] ]
+                        [ textMedium ]
+                    ]
+                ]
+                [ text title ]
+            ]
         , contentWrapper
             [ css
                 [ Css.width (px 490)
                 , padding3 (rem 3.5) (rem 3) (rem 3)
                 , marginLeft (rem 2)
+                , withMedia
+                    [ only screen [ Media.maxWidth (px 800) ] ]
+                    [ Css.maxWidth (pct 100), padding3 (rem 1.5) (rem 2) (rem 1), marginLeft (rem 0) ]
                 ]
             ]
             (List.map repositoryRow content)

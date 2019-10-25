@@ -17,6 +17,12 @@ paddingLarge =
         ]
 
 
+paddingSmall =
+    batch
+        [ padding SG.spacing.small
+        ]
+
+
 borderPink =
     batch
         [ borderWidth (px 2)
@@ -46,6 +52,10 @@ textLarge =
 
 textMedium =
     batch [ fontSize SG.textSize.medium ]
+
+
+textNormal =
+    batch [ fontSize SG.textSize.normal ]
 
 
 textColor =
