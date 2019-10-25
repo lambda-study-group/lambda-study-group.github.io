@@ -63,6 +63,10 @@ lerp start end norm =
     start + norm * (end - start)
 
 
+maxOpacity =
+    0.65
+
+
 updateCombinator curTime totalHeight combinator =
     let
         { initialTime, opacity, position, delay } =
@@ -72,14 +76,14 @@ updateCombinator curTime totalHeight combinator =
             position
 
         elapsed =
-            Basics.max (curTime - initialTime - delay) 0
+            Basics.max (modBy duration (curTime - initialTime - delay)) 0
 
         progress =
             Basics.min ((elapsed |> toFloat) / duration) 1.0
     in
     if progress < 1.0 then
         { combinator
-            | opacity = ((lerp -1 1 progress |> abs) - 1) |> abs
+            | opacity = ((lerp -maxOpacity maxOpacity progress |> abs) - maxOpacity) |> abs
             , position = ( px, progress * totalHeight )
         }
 
