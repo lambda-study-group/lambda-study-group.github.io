@@ -35,6 +35,10 @@ import Task
 import Time
 
 
+
+-- TODO: exist a possible way of optimize the functions call
+
+
 type alias Combinator =
     { letter : String
     , delay : Int
@@ -238,6 +242,7 @@ combinatorWrapper { position, letter, opacity, delay } =
         translateStr =
             "translate3d(0px," ++ String.fromFloat -y ++ "px, 0px)"
     in
+    -- Todo: styled "li"
     div
         [ css
             [ Css.position absolute
@@ -262,6 +267,7 @@ combinatorsBackground model =
         { combinators } =
             model
     in
+    -- todo: "ul"
     Keyed.node "div"
         [ id "combinators"
         , css
