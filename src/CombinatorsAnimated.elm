@@ -243,7 +243,7 @@ combinatorStyled shiftX =
         , left (pct shiftX)
         , color Theme.color.primary
         , Theme.fontFamily.secondary
-        , Theme.breakpoint.tablet [ Theme.textSize.normal ]
+        , Theme.breakpoint.tablet [ Theme.textSize.medium ]
         ]
 
 
@@ -287,6 +287,5 @@ combinatorsBackground model =
         { combinators } =
             model
     in
-    -- todo: "ul"
     combinatorsContainer
         (List.map combinatorKeyed combinators)

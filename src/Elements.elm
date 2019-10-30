@@ -11,7 +11,9 @@ import Svg.Styled.Attributes as SAttr
 
 
 
--- LAMBDA LOGO --
+-------------------------------------------------------------------------------
+-- LAMBDA LOGOS
+-------------------------------------------------------------------------------
 
 
 animFill =
@@ -60,7 +62,7 @@ lambdaPath =
                     ]
                 )
             , Css.property "stroke-dasharray" "1000"
-            , Css.property "animation-duration" "2s"
+            , Css.animationDuration (sec 2)
             , Css.property "animation-timing-function" "ease-in-out"
             , Css.property "stroke" Theme.colorRaw.primary
             , Css.property "stroke-width" "2px"
@@ -96,7 +98,9 @@ lambdaLogoSmall =
 
 
 
+-------------------------------------------------------------------------------
 -- Common Elements
+-------------------------------------------------------------------------------
 
 
 boxStyled =
@@ -162,6 +166,20 @@ headerTitle size txt =
         [ text txt ]
 
 
+headerTitleXLarge =
+    headerTitle XLarge
+
+
+headerTitleLarge =
+    headerTitle Large
+
+
+type alias LinkData =
+    { url : String
+    , label : String
+    }
+
+
 link themeColor { url, label } =
     a
         [ href url
@@ -182,6 +200,12 @@ linkDefault =
 
 linkText =
     link Theme.color.text
+
+
+
+-------------------------------------------------------------------------------
+-- ICONS
+-------------------------------------------------------------------------------
 
 
 icon srcIcon =
@@ -209,10 +233,109 @@ navigationIcon =
     icon "assets/navigation-feather-icon.svg"
 
 
+
+-------------------------------------------------------------------------------
+-- HOME ELEMENTS
+-------------------------------------------------------------------------------
+
+
+type alias ContentHome =
+    { title : String
+    , groupLink : LinkData
+    , textInvite : String
+    , description : String
+    }
+
+
+animaWidth =
+    Anima.property "width"
+
+
+lambdaSeparator =
+    div
+        [ css
+            [ Css.maxWidth (px 120)
+            , backgroundColor Theme.color.primary
+            , borderColor Theme.color.primary
+            , borderWidth (px 1)
+            , borderStyle solid
+            , Css.height (px 6)
+            , Css.width (pct 100)
+            , margin3 (rem 1.5) (rem 0) (rem 3)
+            , animationName
+                (Anima.keyframes
+                    [ ( 0, [ animaWidth "0%", Anima.backgroundColor Theme.color.background ] )
+                    , ( 80, [ animaWidth "30%", Anima.backgroundColor Theme.color.background ] )
+                    , ( 100, [ animaWidth "100%", Anima.backgroundColor Theme.color.primary ] )
+                    ]
+                )
+            , Css.animationDuration (sec 2)
+            , Css.property "animation-timing-function" "ease-in-out"
+            , Theme.breakpoint.tablet [ Css.height (px 4), Css.maxWidth (px 60) ]
+            ]
+        ]
+        []
+
+
+homeParagraphStyled =
+    styled textStyled
+        [ Theme.textSize.large
+        , textAlign center
+        , Theme.breakpoint.tablet [ Theme.textSize.medium ]
+        ]
+
+
+lambdaDescription contents =
+    boxStyled
+        [ css
+            [ padding (rem 4)
+            , backgroundColor Theme.color.backgroundAlpha
+            , Theme.breakpoint.tablet [ padding (rem 1) ]
+            ]
+        ]
+        [ homeParagraphStyled []
+            [ text contents.description ]
+        , homeParagraphStyled []
+            [ text contents.textInvite
+            , linkDefault contents.groupLink
+            , text "."
+            ]
+        ]
+
+
+homeContent : ContentHome -> Html msg
+homeContent contents =
+    div
+        [ css
+            [ displayFlex
+            , justifyContent center
+            , flexDirection column
+            , alignItems center
+            , padding3 (rem 6) (rem 0) (rem 0)
+            , maxWidth (px 720)
+            , boxSizing borderBox
+            , margin auto
+            , zIndex (int 2)
+            , position relative
+            , Theme.breakpoint.tablet [ maxWidth (px 520) ]
+            ]
+        ]
+        [ lambdaLogoLarge
+        , headerTitleXLarge contents.title
+        , lambdaSeparator
+        , lambdaDescription contents
+        ]
+
+
+
+-------------------------------------------------------------------------------
+-- REPOSITORY ELEMENTS
+-------------------------------------------------------------------------------
+
+
 repositoryRow repoLinkData =
     div
         [ css
-            -- TODO: use the Styles
             [ displayFlex
             , padding2 (rem 1) (rem 0)
             , alignItems center
@@ -220,23 +343,16 @@ repositoryRow repoLinkData =
         ]
         [ div
             [ css
-                -- TODO: Refactor Icon element
-                -- TODO: use the StyleGuide
-                -- TODO: add an interaction here
                 [ paddingRight (rem 3)
-                , withMedia
-                    [ only screen [ Media.maxWidth (px 800) ] ]
-                    [ paddingRight (rem 1.5) ]
+                , Theme.breakpoint.tablet [ paddingRight (rem 1.5) ]
                 ]
             ]
             [ githubIcon ]
         , div []
-            -- TODO: transform the link* in a styled element
             [ spanStyled
                 [ css
                     [ Theme.textSize.large
-                    , Theme.breakpoint.tablet
-                        [ Theme.textSize.medium ]
+                    , Theme.breakpoint.tablet [ Theme.textSize.medium ]
                     ]
                 ]
                 [ linkText repoLinkData ]
@@ -244,20 +360,13 @@ repositoryRow repoLinkData =
         ]
 
 
-
--- TODO: split this element, plz
-
-
 repositoryContainer { title, content } =
     div
         [ css
             [ padding2 (rem 4) (rem 0)
-            , withMedia
-                [ only screen [ Media.maxWidth (px 800) ] ]
-                [ Css.maxWidth (pct 100) ]
+            , Theme.breakpoint.tablet [ Css.maxWidth (pct 100) ]
             ]
         ]
-        -- TODO: add an interation here
         [ boxStyled
             [ css
                 [ display inlineBlock
@@ -290,6 +399,23 @@ repositoryContainer { title, content } =
         ]
 
 
+repositoriesSection repositories =
+    section
+        [ css
+            [ displayFlex
+            , flexWrap Css.wrap
+            , justifyContent spaceAround
+            ]
+        ]
+        (List.map repositoryContainer repositories)
+
+
+
+-------------------------------------------------------------------------------
+-- LANGUAGES ELEMENTS
+-------------------------------------------------------------------------------
+
+
 languageWrapper ({ label, rot, url } as lang) =
     let
         ( tx, ty ) =
@@ -311,3 +437,82 @@ languageWrapper ({ label, rot, url } as lang) =
             ]
         ]
         [ linkDefault { label = label, url = url } ]
+
+
+languageContainer languages =
+    div
+        [ css
+            [ minWidth (px 240)
+            , maxWidth (px 720)
+            , minHeight (rem 8)
+            , displayFlex
+            , Theme.breakpoint.tablet [ minHeight (rem 6) ]
+            , flex (int 1)
+            , justifyContent spaceBetween
+            ]
+        ]
+        (List.map languageWrapper languages)
+
+
+languagesSection languagesTuple =
+    section
+        [ css
+            [ displayFlex
+            , padding2 (rem 12) (rem 2)
+            , maxWidth (px 1440)
+            , overflow Css.hidden
+            , flexWrap Css.wrap
+            , Css.width (pct 100)
+            , Theme.breakpoint.tablet [ padding2 (rem 2) (rem 1) ]
+            ]
+        ]
+        [ div [ css [ padding4 (rem 0) (rem 3) (rem 0) (rem 1) ] ] [ lambdaLogoSmall ]
+        , languageContainer (Tuple.first languagesTuple)
+        , languageContainer (Tuple.second languagesTuple)
+        ]
+
+
+
+-------------------------------------------------------------------------------
+-- FOOTER ELEMENTS
+-------------------------------------------------------------------------------
+
+
+footerLink data =
+    div [ css [ displayFlex, padding3 (rem 2) (rem 1) (rem 0) ] ]
+        [ data.icon
+        , div [ css [ paddingLeft (rem 1.5) ] ]
+            [ spanStyled
+                [ css
+                    [ Theme.textSize.large
+                    , Theme.breakpoint.tablet [ Theme.textSize.medium ]
+                    ]
+                ]
+                [ linkText data.link ]
+            ]
+        ]
+
+
+footerSection linksData title =
+    footer
+        [ css
+            [ -- TODO: create some styles for flex*
+              displayFlex
+            , flexDirection column
+            , alignItems center
+            , justifyContent center
+            , padding2 (rem 3) (rem 0)
+            , backgroundColor Theme.color.footer
+            ]
+        ]
+        -- Split this elements
+        [ div [ css [ displayFlex ] ]
+            [ lambdaLogoMedium
+            , div [ css [ paddingLeft (rem 2) ] ] [ headerTitleLarge title ]
+            ]
+        , div [ css [ displayFlex, justifyContent spaceAround ] ]
+            (List.map
+                footerLink
+                linksData
+            )
+        ]

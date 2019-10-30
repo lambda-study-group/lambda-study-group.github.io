@@ -1,39 +1,25 @@
 module Main exposing (..)
 
 import Browser
-import CombinatorsAnimated
-    exposing
-        ( combinatorsBackground
-        )
+import CombinatorsAnimated exposing (combinatorsBackground)
 import Contents
 import Css exposing (..)
 import Css.Global exposing (body, global)
-import Css.Media as Media exposing (only, screen, withMedia)
 import Elements
     exposing
-        ( HeaderSize(..)
-        , boxStyled
+        ( ContentHome
+        , HeaderSize(..)
+        , footerSection
         , githubIcon
-        , headerTitle
-        , lambdaLogoLarge
-        , lambdaLogoMedium
-        , lambdaLogoSmall
-        , languageWrapper
-        , linkDefault
-        , linkText
+        , homeContent
+        , languagesSection
         , navigationIcon
-        , repositoryContainer
-        , spanStyled
-        , textStyled
+        , repositoriesSection
         )
 import Html
 import Html.Styled exposing (..)
-import Html.Styled.Attributes as Attr exposing (..)
+import Html.Styled.Attributes exposing (css)
 import StyleGuide as Theme
-
-
-
--- TODO: refact this module
 
 
 globalCss =
@@ -46,130 +32,21 @@ globalCss =
         ]
 
 
-lambdaTitleXLarge =
-    headerTitle XLarge Contents.title
-
-
-lambdaTitleLarge =
-    headerTitle Large Contents.title
-
-
-lambdaSeparator =
-    div
-        [ css
-            [ Css.width (px 120)
-            , backgroundColor Theme.color.primary
-            , Css.height (px 4)
-            , margin3 (rem 1.5) (rem 0) (rem 3)
-            ]
-        ]
-        []
-
-
-homeParagraphStyled =
-    styled textStyled
-        [ Theme.textSize.large
-        , textAlign center
-        , Theme.breakpoint.tablet [ Theme.textSize.medium ]
-        ]
-
-
-lambdaDescription =
-    boxStyled
-        [ css
-            [ padding (rem 4)
-            , backgroundColor Theme.color.backgroundAlpha
-            , Theme.breakpoint.tablet [ padding (rem 1) ]
-            ]
-        ]
-        [ homeParagraphStyled []
-            [ text Contents.description ]
-        , homeParagraphStyled []
-            [ text Contents.invite
-            , linkDefault Contents.telegramLinkData
-            , text "."
-            ]
-        ]
-
-
-homeContent =
-    div
-        [ css
-            [ displayFlex
-            , justifyContent center
-            , flexDirection column
-            , alignItems center
-            , padding3 (rem 6) (rem 0) (rem 0)
-            , maxWidth (px 720)
-            , boxSizing borderBox
-            , margin auto
-            , zIndex (int 2)
-            , position relative
-            , Theme.breakpoint.tablet [ maxWidth (px 520) ]
-            ]
-        ]
-        [ lambdaLogoLarge
-        , lambdaTitleXLarge
-        , lambdaSeparator
-        , lambdaDescription
-        ]
-
-
-homeSection : Model -> Html msg
-homeSection model =
+homeSection : CombinatorsAnimated.Model -> ContentHome -> Html msg
+homeSection combinators contents =
     section
         [ css [ position relative, minHeight (vh 100) ] ]
-        [ combinatorsBackground model.combinators
-        , homeContent
+        [ combinatorsBackground combinators
+        , homeContent contents
         ]
 
 
-languageContainer languages =
-    div
-        [ css
-            [ minWidth (px 240)
-            , maxWidth (px 720)
-            , minHeight (rem 8)
-            , displayFlex
-            , Theme.breakpoint.tablet [ minHeight (rem 6) ]
-            , flex (int 1)
-            , justifyContent spaceBetween
-            ]
-        ]
-        (List.map languageWrapper languages)
-
-
-languagesSection =
-    section
-        [ css
-            [ displayFlex
-            , padding2 (rem 12) (rem 2)
-            , maxWidth (px 1440)
-            , overflow Css.hidden
-            , flexWrap Css.wrap
-            , Css.width (pct 100)
-            , Theme.breakpoint.tablet [ padding2 (rem 2) (rem 1) ]
-            ]
-        ]
-        [ div [ css [ padding4 (rem 0) (rem 3) (rem 0) (rem 1) ] ] [ lambdaLogoSmall ]
-        , languageContainer (Tuple.first Contents.languages)
-        , languageContainer (Tuple.second Contents.languages)
-        ]
-
-
-repositoriesList =
-    List.map repositoryContainer Contents.repositories
-
-
-repositoriesSection =
-    section
-        [ css
-            [ displayFlex
-            , flexWrap Css.wrap
-            , justifyContent spaceAround
-            ]
-        ]
-        repositoriesList
+contentHome =
+    { title = Contents.title
+    , groupLink = Contents.telegramLinkData
+    , textInvite = Contents.invite
+    , description = Contents.description
+    }
 
 
 footerLinksData =
@@ -182,48 +59,10 @@ footerLinksData =
     ]
 
 
-footerLink { icon, link } =
-    div [ css [ displayFlex, padding3 (rem 2) (rem 1) (rem 0) ] ]
-        [ icon
-        , div [ css [ paddingLeft (rem 1.5) ] ]
-            [ spanStyled
-                [ css
-                    [ Theme.textSize.large
-                    , Theme.breakpoint.tablet [ Theme.textSize.medium ]
-                    ]
-                ]
-                [ linkText link ]
-            ]
-        ]
 
-
-lambdaFooter =
-    footer
-        [ css
-            [ -- TODO: create some styles for flex*
-              displayFlex
-            , flexDirection column
-            , alignItems center
-            , justifyContent center
-            , padding2 (rem 3) (rem 0)
-            , backgroundColor Theme.color.footer
-            ]
-        ]
-        -- Split this elements
-        [ div [ css [ displayFlex ] ]
-            [ lambdaLogoMedium
-            , div [ css [ paddingLeft (rem 2) ] ] [ lambdaTitleLarge ]
-            ]
-        , div [ css [ displayFlex, justifyContent spaceAround ] ]
-            (List.map
-                footerLink
-                footerLinksData
-            )
-        ]
-
-
-
+-------------------------------------------------------------------------------
 -- MODEL
+-------------------------------------------------------------------------------
 
 
 type alias Model =
@@ -232,7 +71,9 @@ type alias Model =
 
 
 
+-------------------------------------------------------------------------------
 -- MSG
+-------------------------------------------------------------------------------
 
 
 type Msg
@@ -240,7 +81,9 @@ type Msg
 
 
 
+-------------------------------------------------------------------------------
 -- INIT
+-------------------------------------------------------------------------------
 
 
 init : () -> ( Model, Cmd Msg )
@@ -253,25 +96,31 @@ init _ =
 
 
 
+-------------------------------------------------------------------------------
 -- VIEW
+-------------------------------------------------------------------------------
+
+
+preUnstyled =
+    List.map toUnstyled
+        [ globalCss
+        , languagesSection Contents.languages
+        , repositoriesSection Contents.repositories
+        , footerSection footerLinksData Contents.title
+        ]
 
 
 view : Model -> Browser.Document msg
-view model =
+view { combinators } =
     { title = Contents.title
-    , body =
-        List.map toUnstyled
-            [ globalCss
-            , homeSection model
-            , languagesSection
-            , repositoriesSection
-            , lambdaFooter
-            ]
+    , body = (toUnstyled <| homeSection combinators contentHome) :: preUnstyled
     }
 
 
 
+-------------------------------------------------------------------------------
 -- UPDATE
+-------------------------------------------------------------------------------
 
 
 update msg model =
@@ -287,7 +136,9 @@ update msg model =
 
 
 
+-------------------------------------------------------------------------------
 -- SUBSCRIPTIONS
+-------------------------------------------------------------------------------
 
 
 subscriptions model =
@@ -296,7 +147,9 @@ subscriptions model =
 
 
 
+-------------------------------------------------------------------------------
 -- MAIN
+-------------------------------------------------------------------------------
 
 
 main =
