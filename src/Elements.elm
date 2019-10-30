@@ -290,7 +290,7 @@ repositoryContainer { title, content } =
         ]
 
 
-languageWrapper ({ label, rot } as lang) =
+languageWrapper ({ label, rot, url } as lang) =
     let
         ( tx, ty ) =
             lang.translate
@@ -310,4 +310,4 @@ languageWrapper ({ label, rot } as lang) =
             , Theme.breakpoint.tablet [ Theme.textSize.medium ]
             ]
         ]
-        [ text label ]
+        [ linkDefault { label = label, url = url } ]
