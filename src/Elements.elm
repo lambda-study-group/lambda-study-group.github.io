@@ -1,38 +1,25 @@
 module Elements exposing (..)
 
 import Css exposing (..)
-import Css.Animations as Anim
+import Css.Animations as Anima
 import Css.Media as Media exposing (only, screen, withMedia)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attrs exposing (..)
 import StyleGuide as Theme
-import Styles
-    exposing
-        ( backgroundStyle
-        , borderPink
-        , font
-        , linkColor
-        , paddingLarge
-        , textColor
-        , textLarge
-        , textMedium
-        , textXLarge
-        )
 import Svg.Styled exposing (path, svg)
 import Svg.Styled.Attributes as SAttr
 
 
 
--- TODO: order the elements  by role
--- TODO: all elements 'styled' must have the name with suffix "Styled"
+-- LAMBDA LOGO --
 
 
 animFill =
-    Anim.property "fill"
+    Anima.property "fill"
 
 
 animStrokeDash =
-    Anim.property "stroke-dashoffset"
+    Anima.property "stroke-dashoffset"
 
 
 lambdaPath =
@@ -63,19 +50,19 @@ lambdaPath =
             118.533 157.129 116.138 162.663C112.792 170.394 107.436 174.866 100.401 175.805C99.4399
             175.933 97.1579 175.987 96.2288 175.903Z
             """
-        , SAttr.fill "#D872E9"
+        , SAttr.fill Theme.colorRaw.primary
         , SAttr.css
             [ animationName
-                (Anim.keyframes
+                (Anima.keyframes
                     [ ( 0, [ animFill "none", animStrokeDash "1000" ] )
-                    , ( 80, [ animFill "black" ] )
-                    , ( 100, [ animFill "#D872E9", animStrokeDash "0" ] )
+                    , ( 80, [ animFill Theme.colorRaw.background ] )
+                    , ( 100, [ animFill Theme.colorRaw.primary, animStrokeDash "0" ] )
                     ]
                 )
             , Css.property "stroke-dasharray" "1000"
             , Css.property "animation-duration" "2s"
             , Css.property "animation-timing-function" "ease-in-out"
-            , Css.property "stroke" "#D872E9"
+            , Css.property "stroke" Theme.colorRaw.primary
             , Css.property "stroke-width" "2px"
             ]
         ]
@@ -90,26 +77,10 @@ lambdaSvg width1 width2 =
         , SAttr.css
             [ Css.width (px width1)
             , Css.height auto
-            , withMedia
-                [ only screen [ Media.maxWidth (px 800) ] ]
-                [ Css.width (px width2) ]
+            , Theme.breakpoint.tablet [ Css.width (px width2) ]
             ]
         ]
         [ lambdaPath ]
-
-
-lambdaLogo : Float -> Float -> Html msg
-lambdaLogo width1 width2 =
-    img
-        [ src "assets/logo.svg"
-        , css
-            [ Css.width (px width1)
-            , withMedia
-                [ only screen [ Media.maxWidth (px 800) ] ]
-                [ Css.width (px width2) ]
-            ]
-        ]
-        []
 
 
 lambdaLogoLarge =
@@ -124,12 +95,12 @@ lambdaLogoSmall =
     lambdaSvg 18 10
 
 
-contentWrapper =
+contentWrapperStyled =
     styled div
-        [ borderPink
-        , withMedia
-            [ only screen [ Media.maxWidth (px 800) ] ]
-            [ Css.borderWidth (px 0) ]
+        [ borderWidth (px 2)
+        , borderColor Theme.color.primary
+        , borderStyle solid
+        , Theme.breakpoint.tablet [ borderWidth (px 0) ]
         ]
 
 
@@ -137,14 +108,14 @@ textStyled =
     styled p
         [ margin (px 0)
         , padding (rem 1.2)
-        , textColor
-        , font
+        , color Theme.color.text
+        , Theme.fontFamily.primary
         ]
 
 
 spanStyled =
     styled span
-        [ textColor, font ]
+        [ color Theme.color.text, Theme.fontFamily.primary ]
 
 
 type HeaderSize
@@ -158,7 +129,7 @@ headerSize hsize =
             batch [ fontSize (px 32) ]
 
         XLarge ->
-            textXLarge
+            Theme.textSize.xxLarge
 
 
 headerSizeSecondary hsize =
@@ -174,11 +145,11 @@ headerTitle : HeaderSize -> String -> Html msg
 headerTitle size txt =
     h2
         [ css
-            [ textColor
+            [ color Theme.color.text
             , padding (px 0)
             , margin2 (rem 1.5) (rem 0)
             , headerSize size
-            , font
+            , Theme.fontFamily.primary
             , withMedia
                 [ only screen [ Media.maxWidth (px 800) ] ]
                 [ headerSizeSecondary size ]
@@ -187,20 +158,25 @@ headerTitle size txt =
         [ text txt ]
 
 
-link color { url, label } =
+link themeColor { url, label } =
     a
         [ href url
-        , css [ color ]
+        , css
+            [ color themeColor
+            , hover
+                [ color Theme.color.linkHover
+                ]
+            ]
         ]
         [ text label ]
 
 
 linkDefault =
-    link linkColor
+    link Theme.color.link
 
 
 linkText =
-    link textColor
+    link Theme.color.text
 
 
 icon srcIcon =
@@ -253,10 +229,9 @@ repositoryRow repoLinkData =
             -- TODO: transform the link* in a styled element
             [ spanStyled
                 [ css
-                    [ textMedium
-                    , withMedia
-                        [ only screen [ Media.maxWidth (px 800) ] ]
-                        [ fontSize (rem 1.5) ]
+                    [ Theme.textSize.large
+                    , Theme.breakpoint.tablet
+                        [ Theme.textSize.medium ]
                     ]
                 ]
                 [ linkText repoLinkData ]
@@ -278,32 +253,32 @@ repositoryContainer { title, content } =
             ]
         ]
         -- TODO: add an interation here
-        [ contentWrapper
+        [ contentWrapperStyled
             [ css
                 [ display inlineBlock
                 , padding2 (rem 1) (rem 2)
-                , backgroundStyle
+                , backgroundColor Theme.color.background
                 , marginBottom (rem -2)
                 ]
             ]
             [ spanStyled
                 [ css
-                    [ textLarge
-                    , withMedia
-                        [ only screen [ Media.maxWidth (px 800) ] ]
-                        [ textMedium ]
+                    [ Theme.textSize.xLarge
+                    , Theme.breakpoint.tablet [ Theme.textSize.large ]
                     ]
                 ]
                 [ text title ]
             ]
-        , contentWrapper
+        , contentWrapperStyled
             [ css
                 [ Css.width (px 490)
                 , padding3 (rem 3.5) (rem 3) (rem 3)
                 , marginLeft (rem 2)
-                , withMedia
-                    [ only screen [ Media.maxWidth (px 800) ] ]
-                    [ Css.maxWidth (pct 100), padding3 (rem 1.5) (rem 2) (rem 1), marginLeft (rem 0) ]
+                , Theme.breakpoint.tablet
+                    [ Css.maxWidth (pct 100)
+                    , padding3 (rem 1.5) (rem 2) (rem 1)
+                    , marginLeft (rem 0)
+                    ]
                 ]
             ]
             (List.map repositoryRow content)
@@ -317,14 +292,17 @@ languageWrapper ({ label, rot } as lang) =
     in
     div
         [ css
-            [ color Theme.colors.language
+            [ color Theme.color.language
             , transforms
                 [ rotate (deg rot)
                 , scale lang.scale
                 , translate2 (px tx) (px ty)
                 ]
-            , textLarge
-            , Styles.font
+            , Css.property "transform-origin" "center center"
+            , Theme.fontFamily.primary
+            , Theme.textSize.xLarge
+            , Css.height (rem 2.5)
+            , Theme.breakpoint.tablet [ Theme.textSize.medium ]
             ]
         ]
         [ text label ]

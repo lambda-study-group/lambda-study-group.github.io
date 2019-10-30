@@ -34,52 +34,59 @@ githubLinkData =
 
 
 languages =
-    [ { label = "OCaml"
-      , rot = 15
-      , scale = 1
-      , translate = ( 0, -25 )
-      }
-    , { label = "SML"
-      , rot = -15
-      , scale = 0.95
-      , translate = ( -50, 0 )
-      }
-    , { label = "Erlang"
-      , rot = -5
-      , scale = 1.2
-      , translate = ( -30, 0 )
-      }
-    , { label = "F#"
-      , rot = -2
-      , scale = 1.4
-      , translate = ( -10, -20 )
-      }
-    , { label = "Clojure"
-      , rot = -7
-      , scale = 1.18
-      , translate = ( -20, 0 )
-      }
-    , { label = "Elm Lang"
-      , rot = 15
-      , scale = 1.4
-      , translate = ( 0, -10 )
-      }
-    , { label = "Scala"
-      , rot = -20
-      , scale = 1.2
-      , translate = ( 0, -30 )
-      }
-    , { label = "Lisp"
-      , rot = -4
-      , scale = 1.3
-      , translate = ( -40, 20 )
-      }
-    , { label = "Haskell"
-      , rot = 10
-      , scale = 1.5
-      , translate = ( -30, 0 )
-      }
-    ]
+    ( [ { label = "OCaml"
+        , rot = 15
+        , scale = 1
+        , translate = ( 0, -5 )
+        }
+      , { label = "SML"
+        , rot = -15
+        , scale = 1.3
+        , translate = ( -30, 15 )
+        }
+      , { label = "Erlang"
+        , rot = -5
+        , scale = 1.2
+        , translate = ( -30, 15 )
+        }
+      , { label = "F#"
+        , rot = -2
+        , scale = 1.4
+        , translate = ( -20, -5 )
+        }
+      , { label = "Elixir"
+        , rot = 10
+        , scale = 1.3
+        , translate = ( -20, 20 )
+        }
+      ]
+    , [ { label = "Clojure"
+        , rot = -7
+        , scale = 1.18
+        , translate = ( 10, 0 )
+        }
+      , { label = "Elm"
+        , rot = 15
+        , scale = 1.4
+        , translate = ( 10, 10 )
+        }
+      , { label = "Scala"
+        , rot = -20
+        , scale = 1.2
+        , translate = ( 10, 0 )
+        }
+      , { label = "Scheme"
+        , rot = -4
+        , scale = 1.3
+        , translate = ( -30, 20 )
+        }
+      , { label = "Haskell"
+        , rot = 10
+        , scale = 1.5
+        , translate = ( -20, 15 )
+        }
+      ]
+    )
 
 
 projects =

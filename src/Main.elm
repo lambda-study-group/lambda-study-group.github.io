@@ -12,7 +12,7 @@ import Css.Media as Media exposing (only, screen, withMedia)
 import Elements
     exposing
         ( HeaderSize(..)
-        , contentWrapper
+        , contentWrapperStyled
         , githubIcon
         , headerTitle
         , lambdaLogoLarge
@@ -30,7 +30,6 @@ import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (..)
 import StyleGuide as Theme
-import Styles exposing (backgroundStyle, paddingLarge, paddingSmall, textMedium, textNormal)
 
 
 
@@ -42,7 +41,7 @@ globalCss =
         [ body
             [ padding (px 0)
             , margin (px 0)
-            , backgroundStyle
+            , backgroundColor Theme.color.background
             ]
         ]
 
@@ -59,7 +58,7 @@ lambdaSeparator =
     div
         [ css
             [ Css.width (px 120)
-            , backgroundColor Theme.colors.pink
+            , backgroundColor Theme.color.primary
             , Css.height (px 4)
             , margin3 (rem 1.5) (rem 0) (rem 3)
             ]
@@ -67,33 +66,52 @@ lambdaSeparator =
         []
 
 
-homeParagraph =
+homeParagraphStyled =
     styled textStyled
-        [ textMedium
+        [ Theme.textSize.large
         , textAlign center
-
-        -- todo: centralize the breakpoints
-        , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
-            [ fontSize (rem 1.5) ]
+        , Theme.breakpoint.tablet [ Theme.textSize.medium ]
         ]
 
 
 lambdaDescription =
-    contentWrapper
+    contentWrapperStyled
         [ css
-            [ paddingLarge
-            , backgroundColor (hex "00000042")
-            , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
-                [ paddingSmall ]
+            [ padding (rem 4)
+            , backgroundColor Theme.color.backgroundAlpha
+            , Theme.breakpoint.tablet [ padding (rem 1) ]
             ]
         ]
-        [ homeParagraph []
+        [ homeParagraphStyled []
             [ text Contents.description ]
-        , homeParagraph []
+        , homeParagraphStyled []
             [ text Contents.invite
             , linkDefault Contents.telegramLinkData
             , text "."
             ]
+        ]
+
+
+homeContent =
+    div
+        [ css
+            [ displayFlex
+            , justifyContent center
+            , flexDirection column
+            , alignItems center
+            , padding3 (rem 6) (rem 0) (rem 0)
+            , maxWidth (px 720)
+            , boxSizing borderBox
+            , margin auto
+            , zIndex (int 2)
+            , position relative
+            , Theme.breakpoint.tablet [ maxWidth (px 520) ]
+            ]
+        ]
+        [ lambdaLogoLarge
+        , lambdaTitleXLarge
+        , lambdaSeparator
+        , lambdaDescription
         ]
 
 
@@ -102,55 +120,40 @@ homeSection model =
     section
         [ css [ position relative, minHeight (vh 100) ] ]
         [ combinatorsBackground model.combinators
-        , div
-            [ css
-                [ displayFlex
-                , justifyContent center
-                , flexDirection column
-                , alignItems center
-                , padding3 (rem 6) (rem 0) (rem 0)
-                , maxWidth (px 720)
-                , boxSizing borderBox
-                , margin auto
-                , zIndex (int 2)
-                , position relative
-                , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
-                    [ maxWidth (px 520)
-                    ]
-                ]
-            ]
-            [ lambdaLogoLarge
-            , lambdaTitleXLarge
-            , lambdaSeparator
-            , lambdaDescription
+        , homeContent
+        ]
+
+
+languageContainer languages =
+    div
+        [ css
+            [ minWidth (px 240)
+            , maxWidth (px 720)
+            , minHeight (rem 8)
+            , displayFlex
+            , Theme.breakpoint.tablet [ minHeight (rem 6) ]
+            , flex (int 1)
+            , justifyContent spaceBetween
             ]
         ]
+        (List.map languageWrapper languages)
 
 
 languagesSection =
     section
         [ css
-            [ Css.height (rem 10)
-            , displayFlex
+            [ displayFlex
             , padding2 (rem 12) (rem 2)
             , maxWidth (px 1440)
             , overflow Css.hidden
+            , flexWrap Css.wrap
             , Css.width (pct 100)
-            , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
-                [ padding2 (rem 8) (rem 1.5) ]
+            , Theme.breakpoint.tablet [ padding2 (rem 2) (rem 1) ]
             ]
         ]
         [ div [ css [ padding4 (rem 0) (rem 3) (rem 0) (rem 1) ] ] [ lambdaLogoSmall ]
-        , div
-            [ css
-                [ minWidth (px 700)
-                , maxWidth (px 1440)
-                , displayFlex
-                , flex (int 1)
-                , justifyContent spaceBetween
-                ]
-            ]
-            (List.map languageWrapper Contents.languages)
+        , languageContainer (Tuple.first Contents.languages)
+        , languageContainer (Tuple.second Contents.languages)
         ]
 
 
@@ -185,9 +188,8 @@ footerLink { icon, link } =
         , div [ css [ paddingLeft (rem 1.5) ] ]
             [ spanStyled
                 [ css
-                    [ textMedium
-                    , withMedia [ only screen [ Media.maxWidth (px 800) ] ]
-                        [ fontSize (rem 1.5) ]
+                    [ Theme.textSize.large
+                    , Theme.breakpoint.tablet [ Theme.textSize.medium ]
                     ]
                 ]
                 [ linkText link ]
@@ -204,7 +206,7 @@ lambdaFooter =
             , alignItems center
             , justifyContent center
             , padding2 (rem 3) (rem 0)
-            , backgroundColor Theme.colors.footer
+            , backgroundColor Theme.color.footer
             ]
         ]
         -- Split this elements
@@ -220,13 +222,25 @@ lambdaFooter =
         ]
 
 
+
+-- MODEL
+
+
 type alias Model =
     { combinators : CombinatorsAnimated.Model
     }
 
 
+
+-- MSG
+
+
 type Msg
     = UpdateCombinators CombinatorsAnimated.Msg
+
+
+
+-- INIT
 
 
 init : () -> ( Model, Cmd Msg )
@@ -236,6 +250,10 @@ init _ =
       }
     , Cmd.map UpdateCombinators CombinatorsAnimated.init
     )
+
+
+
+-- VIEW
 
 
 view : Model -> Browser.Document msg
@@ -252,6 +270,10 @@ view model =
     }
 
 
+
+-- UPDATE
+
+
 update msg model =
     case msg of
         UpdateCombinators msgCombinators ->
@@ -259,12 +281,22 @@ update msg model =
                 ( combinators, cmdMsg ) =
                     CombinatorsAnimated.update msgCombinators model.combinators
             in
-            ( { model | combinators = combinators }, Cmd.map UpdateCombinators cmdMsg )
+            ( { model | combinators = combinators }
+            , Cmd.map UpdateCombinators cmdMsg
+            )
+
+
+
+-- SUBSCRIPTIONS
 
 
 subscriptions model =
     Sub.map UpdateCombinators
         (CombinatorsAnimated.subscriptions model.combinators)
+
+
+
+-- MAIN
 
 
 main =

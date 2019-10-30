@@ -1,30 +1,36 @@
-module StyleGuide exposing (colors, fontFamily, spacing, textSize)
+module StyleGuide exposing (breakpoint, color, colorRaw, fontFamily, spacing, textSize)
 
-import Css exposing (batch, fontFamilies, fontWeight, hex, normal, rem)
+import Css exposing (fontFamilies, fontSize, hex, px, rem)
+import Css.Media as Media exposing (only, screen, withMedia)
 
 
-colors =
-    { text = hex "ffffff"
-    , link = hex "e499f0"
-    , icon = hex "ffffff"
-    , background = hex "000000"
+colorRaw =
+    { primary = "#D872E9"
+    , background = "#000000"
+    }
+
+
+color =
+    { text = hex "FFFFFF"
+    , link = hex "E499F0"
+    , linkHover = hex "C770D5"
+    , icon = hex "FFFFFF"
+    , background = hex colorRaw.background
+    , backgroundAlpha = hex "00000042"
     , combinator = hex "36223A"
     , language = hex "C770D5"
-    , pink = hex "d872e9"
+    , primary = hex colorRaw.primary
     , footer = hex "1C1C1C"
     }
 
 
-
--- Remove rem unit?
-
-
 textSize =
-    { small = rem 0.75
-    , normal = rem 1
-    , medium = rem 2
-    , large = rem 2.5
-    , xLarge = rem 4
+    { small = fontSize (rem 0.75)
+    , normal = fontSize (rem 1)
+    , medium = fontSize (rem 1.5)
+    , large = fontSize (rem 2)
+    , xLarge = fontSize (rem 2.5)
+    , xxLarge = fontSize (rem 4)
     }
 
 
@@ -38,9 +44,11 @@ spacing =
 
 
 fontFamily =
-    [ "Ropa Sans", "sans-serif" ]
+    { primary = fontFamilies [ "Ropa Sans", "sans-serif" ]
+    , secondary = fontFamilies [ "Rhodium Libre", "serif" ]
+    }
 
 
-
--- # TODO
--- add breakpoints
+breakpoint =
+    { tablet = withMedia [ only screen [ Media.maxWidth (px 800) ] ]
+    }

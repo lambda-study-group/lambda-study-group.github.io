@@ -14,29 +14,14 @@ import Browser.Events exposing (onAnimationFrame)
 import Css exposing (..)
 import Css.Media as Media exposing (only, screen, withMedia)
 import Debug as Dbg
+import Dict exposing (Dict)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attrs exposing (..)
 import Html.Styled.Keyed as Keyed
-import Html.Styled.Lazy exposing (lazy)
+import Html.Styled.Lazy exposing (lazy, lazy3)
 import StyleGuide as Theme
-import Styles
-    exposing
-        ( backgroundStyle
-        , borderPink
-        , font
-        , linkColor
-        , paddingLarge
-        , textColor
-        , textLarge
-        , textMedium
-        , textXLarge
-        )
 import Task
 import Time
-
-
-
--- TODO: exist a possible way of optimize the functions call
 
 
 type alias Combinator =
@@ -231,7 +216,35 @@ subscriptions model =
 
 
 combinatorKeyed combinator =
-    ( combinator.letter, lazy combinatorWrapper combinator )
+    ( combinator.letter, combinatorWrapper combinator )
+
+
+createPreElement c =
+    let
+        x =
+            Tuple.first c.position
+    in
+    ( x, combinatorStyled x )
+
+
+preElements =
+    Dict.fromList
+        (List.map
+            createPreElement
+            initModel.combinators
+        )
+
+
+combinatorStyled shiftX =
+    styled div
+        [ Css.position absolute
+        , fontSize (px 36)
+        , bottom (px -36)
+        , left (pct shiftX)
+        , color Theme.color.primary
+        , Theme.fontFamily.secondary
+        , Theme.breakpoint.tablet [ Theme.textSize.normal ]
+        ]
 
 
 combinatorWrapper { position, letter, opacity, delay } =
@@ -241,24 +254,31 @@ combinatorWrapper { position, letter, opacity, delay } =
 
         translateStr =
             "translate3d(0px," ++ String.fromFloat -y ++ "px, 0px)"
+
+        element =
+            case Dict.get x preElements of
+                Just preElement ->
+                    preElement
+
+                Nothing ->
+                    combinatorStyled x
     in
-    -- Todo: styled "li"
-    div
-        [ css
-            [ Css.position absolute
-            , fontSize (px 36)
-            , left (pct x)
-            , bottom (px -36)
-            , color Theme.colors.pink
-            , fontFamilies [ "Rhodium Libre", "serif" ]
-            , withMedia
-                [ only screen [ Media.maxWidth (px 800) ] ]
-                [ fontSize (px 18) ]
-            ]
-        , style "opacity" (String.fromFloat opacity)
+    element
+        [ style "opacity" (String.fromFloat opacity)
         , style "transform" translateStr
         ]
         [ text letter ]
+
+
+combinatorsContainer =
+    Keyed.node "div"
+        [ id "combinators"
+        , css
+            [ position absolute
+            , Css.width (pct 100)
+            , Css.height (pct 100)
+            ]
+        ]
 
 
 combinatorsBackground : Model -> Html msg
@@ -268,15 +288,5 @@ combinatorsBackground model =
             model
     in
     -- todo: "ul"
-    Keyed.node "div"
-        [ id "combinators"
-        , css
-            [ position absolute
-            , Css.width (pct 100)
-            , Css.height (pct 100)
-            ]
-        ]
-        (List.map
-            combinatorKeyed
-            combinators
-        )
+    combinatorsContainer
+        (List.map combinatorKeyed combinators)
