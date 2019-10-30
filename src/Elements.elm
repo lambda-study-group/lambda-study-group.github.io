@@ -95,7 +95,11 @@ lambdaLogoSmall =
     lambdaSvg 18 10
 
 
-contentWrapperStyled =
+
+-- Common Elements
+
+
+boxStyled =
     styled div
         [ borderWidth (px 2)
         , borderColor Theme.color.primary
@@ -161,6 +165,7 @@ headerTitle size txt =
 link themeColor { url, label } =
     a
         [ href url
+        , Attrs.target "_blank"
         , css
             [ color themeColor
             , hover
@@ -253,7 +258,7 @@ repositoryContainer { title, content } =
             ]
         ]
         -- TODO: add an interation here
-        [ contentWrapperStyled
+        [ boxStyled
             [ css
                 [ display inlineBlock
                 , padding2 (rem 1) (rem 2)
@@ -269,7 +274,7 @@ repositoryContainer { title, content } =
                 ]
                 [ text title ]
             ]
-        , contentWrapperStyled
+        , boxStyled
             [ css
                 [ Css.width (px 490)
                 , padding3 (rem 3.5) (rem 3) (rem 3)

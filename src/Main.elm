@@ -12,7 +12,7 @@ import Css.Media as Media exposing (only, screen, withMedia)
 import Elements
     exposing
         ( HeaderSize(..)
-        , contentWrapperStyled
+        , boxStyled
         , githubIcon
         , headerTitle
         , lambdaLogoLarge
@@ -75,7 +75,7 @@ homeParagraphStyled =
 
 
 lambdaDescription =
-    contentWrapperStyled
+    boxStyled
         [ css
             [ padding (rem 4)
             , backgroundColor Theme.color.backgroundAlpha
