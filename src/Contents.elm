@@ -11,8 +11,8 @@ title =
 description =
     """
     O intuito do grupo é a participação coletiva de todos e o aprendizado de
-    cada um. No grupo do telegram você pode tirar duvidas, sugerir projetos e
-    conversar sobre temas relacionados a programação funcional Para praticar
+    cada um. No grupo do telegram você pode tirar dúvidas, sugerir projetos e
+    conversar sobre temas relacionados à programação funcional. Para praticar
     temos alguns repositórios em que você pode resolver alguns exercicios.
     """
 
@@ -28,7 +28,7 @@ telegramLinkData =
 
 
 githubLinkData =
-    { url = "https://github.com/lambda-study-group/telegram-bot"
+    { url = "https://github.com/lambda-study-group"
     , label = "GitHub"
     }
 
@@ -96,10 +96,10 @@ projects =
           , "Telegram Bot"
           ]
         , [ "https://github.com/lambda-study-group/awesome-functional-studies"
-          , "Juntar conteudo academico e pratico de várias linguagens em um awesome"
+          , "Juntar conteúdo acadêmico e prático de várias linguagens em um awesome"
           ]
         , [ "https://github.com/lambda-study-group/dicionario-termos-funcionais"
-          , "Dicionario de tradução de termos funcionais"
+          , "Dicionário de tradução de termos funcionais"
           ]
         , [ "https://github.com/lava-jato-the-game/lava_jato"
           , "Desenvolvimento do jogo da Lava Jato com Phoenix(Absinthe) / ClojureScript"
@@ -109,19 +109,19 @@ projects =
 
 
 exercices =
-    { title = "Resolução de Exercicios"
+    { title = "Resolução de Exercícios"
     , content =
         [ [ "https://github.com/lambda-study-group/desafios"
           , "Desafios"
           ]
         , [ "https://github.com/lambda-study-group/sicp"
-          , "Exercicios do livro SICP em várias linguagens diferentes"
+          , "Exercícios do livro SICP em várias linguagens diferentes"
           ]
         , [ "https://github.com/lambda-study-group/hacker-rank"
-          , "Exercicios da trilha de programação funcional do HackerRank"
+          , "Exercícios da trilha de programação funcional do HackerRank"
           ]
         , [ "https://github.com/lambda-study-group/exercism"
-          , "Exercicios de linguagens funcionais no Exercism"
+          , "Exercícios de linguagens funcionais no Exercism"
           ]
         ]
     }
