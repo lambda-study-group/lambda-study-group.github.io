@@ -183,6 +183,7 @@ type alias LinkData =
 link themeColor { url, label } =
     a
         [ href url
+        , rel "noreferrer noopener"
         , Attrs.target "_blank"
         , css
             [ color themeColor
@@ -208,9 +209,9 @@ linkText =
 -------------------------------------------------------------------------------
 
 
-icon srcIcon =
+icon srcIcon altText =
     img
-        [ src srcIcon
+        [ src srcIcon, alt altText
         , css
             [ Css.width (px 24)
             , withMedia
@@ -221,8 +222,9 @@ icon srcIcon =
         []
 
 
+
 githubIcon =
-    icon "assets/github-feather-icon.svg"
+    icon "assets/github-feather-icon.svg" "cat icon"
 
 
 
@@ -230,7 +232,7 @@ githubIcon =
 
 
 navigationIcon =
-    icon "assets/navigation-feather-icon.svg"
+    icon "assets/navigation-feather-icon.svg" "paper airplane pointing up"
 
 
 
